@@ -54,7 +54,7 @@ public class ItemReader {
         String parentName = file.getParentFile().getName();
 
         if(parentName == "items") {
-            Log.warn("%s is not in a namespace", file.getName());
+            Log.warn("%s item is not in a namespace", file.getName());
             return null;
         }
     
@@ -63,7 +63,7 @@ public class ItemReader {
 
     public static CustomItem readItem(YamlConfiguration config, String folderName, String fileName) {
         Key key = Key.key(folderName, fileName);
-        Log.log("Reading %s", key.asString());
+        Log.log("Reading item %s", key.asString());
 
         return CustomItem.Builder.builder(key)
             .customModelData(config.getInt("model"))
