@@ -131,7 +131,7 @@ public class CustomItem {
 
         Builder lore(List<String> lore) {
             if(!lore.isEmpty()) {
-                item.lore = lore.stream().map(line -> mm.deserialize(line)).toList();
+                item.lore = lore.stream().map(line -> mm.deserialize("<!italic><grey>"+line+"</grey></!italic>")).toList();
             }
             return this;
         }
