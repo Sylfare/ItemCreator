@@ -1,5 +1,6 @@
 package re.sylfa.itemcreator.items;
 
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -21,6 +22,7 @@ public class CustomItem {
     private int customModelData;
     private Component itemName;
     private Material material = Material.DIAMOND_PICKAXE;
+    private List<Component> lore;
 
 
     public Key key() {
@@ -38,6 +40,10 @@ public class CustomItem {
     public Material material() {
         return material;
     }
+
+    public List<Component> lore() {
+        return lore;
+    }
     
     public ItemStack asItemStack() {
         var itemNms = CraftItemStack.asNMSCopy(new ItemStack(material));
@@ -52,6 +58,7 @@ public class CustomItem {
             meta.getPersistentDataContainer().set(NamespacedKey.fromString(ID, ItemCreator.getInstance()), PersistentDataType.STRING, key.asString());
             meta.itemName(itemName);
             meta.setCustomModelData(this.hasCustomModelData ? customModelData : null);
+            meta.lore(lore);
         });
 
         return item;
@@ -89,6 +96,13 @@ public class CustomItem {
 
         Builder material(Material material) {
             item.material = material;
+            return this;
+        }
+
+        Builder lore(List<String> lore) {
+            if(!lore.isEmpty()) {
+                item.lore = lore.stream().map(line -> mm.deserialize(line)).toList();
+            }
             return this;
         }
 

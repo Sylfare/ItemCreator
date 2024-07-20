@@ -71,6 +71,7 @@ public class ItemReader {
             .customModelData(config.getInt("model"))
             .itemName(config.getString("itemName", ""))
             .material(Material.matchMaterial(config.getString("material", "diamond_pickaxe")))
+            .lore(config.getStringList("lore"))
             .build();
     }
 }
