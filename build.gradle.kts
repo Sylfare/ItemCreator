@@ -13,10 +13,14 @@ repositories {
     maven {
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
+    maven {
+        url = uri("https://libraries.minecraft.net")
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("com.mojang:brigadier:1.0.18")
     implementation("commons-io:commons-io:2.6")
 }
 
