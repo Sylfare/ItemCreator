@@ -72,6 +72,7 @@ public class ItemReader {
             .maxDamage(config.getInt("maxDamage"))
             .maxStackSize(config.getInt("maxStackSize", 1))
             .jukeboxPlayableComponent(config.getString("jukeboxSong.name"), config.getBoolean("jukeboxSong.showInTooltip", true))
+            .enchantmentGlintOverride(config.getBoolean("enchantmentGlintOverride.set"), config.getBoolean("enchantmentGlintOverride.value"))
             .build();
     }
 }
