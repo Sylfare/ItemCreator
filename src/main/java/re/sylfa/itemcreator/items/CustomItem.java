@@ -14,8 +14,16 @@ public class CustomItem {
     private static final String ID = "id";
 
     private Key key;
+    private boolean hasCustomModelData = false;
+    private int customModelData;
+
+
     public Key key() {
         return this.key;
+    }
+
+    public int customModelData() {
+        return customModelData;
     }
     
     public ItemStack asItemStack() {
@@ -24,6 +32,7 @@ public class CustomItem {
             meta.setMaxDamage(null);
             meta.getPersistentDataContainer().set(NamespacedKey.fromString(ID, ItemCreator.getInstance()), PersistentDataType.STRING, key.asString());
             meta.itemName(Component.text(this.key.asString()));
+            meta.setCustomModelData(this.hasCustomModelData ? customModelData : null);
         });
 
         return item;
@@ -37,6 +46,14 @@ public class CustomItem {
         
         Builder key(Key key) {
             item.key = key;
+            return this;
+        }
+
+        Builder customModelData(int customModelData) {
+            if(customModelData != 0) {
+                item.customModelData = customModelData;
+                item.hasCustomModelData = true;
+            }
             return this;
         }
 
