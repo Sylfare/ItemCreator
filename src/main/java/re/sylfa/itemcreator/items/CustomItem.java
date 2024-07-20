@@ -9,6 +9,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.component.DataComponents;
 import re.sylfa.itemcreator.ItemCreator;
 
@@ -18,6 +19,7 @@ public class CustomItem {
     private Key key;
     private boolean hasCustomModelData = false;
     private int customModelData;
+    private Component itemName;
 
 
     public Key key() {
@@ -26,6 +28,10 @@ public class CustomItem {
 
     public int customModelData() {
         return customModelData;
+    }
+
+    public Component itemName() {
+        return itemName;
     }
     
     public ItemStack asItemStack() {
@@ -38,7 +44,7 @@ public class CustomItem {
         ItemStack item = itemNms.asBukkitCopy();
         item.editMeta(Damageable.class, meta -> {
             meta.getPersistentDataContainer().set(NamespacedKey.fromString(ID, ItemCreator.getInstance()), PersistentDataType.STRING, key.asString());
-            meta.itemName(Component.text(this.key.asString()));
+            meta.itemName(itemName);
             meta.setCustomModelData(this.hasCustomModelData ? customModelData : null);
         });
 
@@ -47,6 +53,8 @@ public class CustomItem {
 
     public static class Builder {
         CustomItem item = new CustomItem();
+        private MiniMessage mm = MiniMessage.miniMessage();
+
         public static Builder builder() {
             return new CustomItem.Builder();
         }
@@ -61,6 +69,15 @@ public class CustomItem {
                 item.customModelData = customModelData;
                 item.hasCustomModelData = true;
             }
+            return this;
+        }
+
+        Builder itemName(String rawItemName) {
+            return itemName(mm.deserialize(rawItemName));
+        }
+
+        Builder itemName(Component itemName) {
+            item.itemName = itemName;
             return this;
         }
 
