@@ -32,6 +32,8 @@ public class CustomItem {
     private boolean hasMaxDamage = false;
     private int maxStackSize;
     private JukeboxPlayableComponent jukeboxPlayableComponent;
+    private boolean hasEnchantmentGlintOverride;
+    private boolean enchantmentGlintOverride;
 
     public Key key() {
         return this.key;
@@ -64,7 +66,7 @@ public class CustomItem {
     public JukeboxPlayableComponent jukeboxPlayableComponent() {
         return jukeboxPlayableComponent;
     }
-    
+
     public ItemStack asItemStack() {
         var itemNms = CraftItemStack.asNMSCopy(new ItemStack(material));
         // setMaxDamage(null) only resets the *patched* value, not the actual one
@@ -79,9 +81,14 @@ public class CustomItem {
             meta.itemName(itemName);
             meta.setCustomModelData(this.hasCustomModelData ? customModelData : null);
             meta.lore(lore);
-            if(hasMaxDamage) meta.setMaxDamage(maxDamage);
+            if(hasMaxDamage) {
+                meta.setMaxDamage(maxDamage);
+            }
             meta.setMaxStackSize(maxStackSize);
             meta.setJukeboxPlayable(jukeboxPlayableComponent);
+            if(hasEnchantmentGlintOverride) {
+                meta.setEnchantmentGlintOverride(enchantmentGlintOverride);
+            }
         });
 
         return item;
@@ -164,6 +171,12 @@ public class CustomItem {
         
         Builder jukeboxPlayableComponent(JukeboxPlayableComponent jukeboxPlayableComponent) {
             item.jukeboxPlayableComponent = jukeboxPlayableComponent;
+            return this;
+        }
+
+        Builder enchantmentGlintOverride(boolean set, boolean override) {
+            item.hasEnchantmentGlintOverride = set;
+            item.enchantmentGlintOverride = override;
             return this;
         }
 
