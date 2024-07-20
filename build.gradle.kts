@@ -7,6 +7,7 @@
 
 plugins {
 	`java-library`
+    id("io.papermc.paperweight.userdev") version "1.7.1"
 }
 
 repositories {
@@ -19,9 +20,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     compileOnly("com.mojang:brigadier:1.0.18")
     implementation("commons-io:commons-io:2.6")
+    paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
 }
 
 java {
