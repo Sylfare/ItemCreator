@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import net.kyori.adventure.key.Key;
@@ -69,6 +70,7 @@ public class ItemReader {
             .key(key)
             .customModelData(config.getInt("model"))
             .itemName(config.getString("itemName", ""))
+            .material(Material.matchMaterial(config.getString("material", "diamond_pickaxe")))
             .build();
     }
 }

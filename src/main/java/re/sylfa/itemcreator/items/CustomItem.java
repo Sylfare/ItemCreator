@@ -20,6 +20,7 @@ public class CustomItem {
     private boolean hasCustomModelData = false;
     private int customModelData;
     private Component itemName;
+    private Material material = Material.DIAMOND_PICKAXE;
 
 
     public Key key() {
@@ -33,13 +34,18 @@ public class CustomItem {
     public Component itemName() {
         return itemName;
     }
+
+    public Material material() {
+        return material;
+    }
     
     public ItemStack asItemStack() {
-        var itemNms = CraftItemStack.asNMSCopy(new ItemStack(Material.DIAMOND_PICKAXE));
+        var itemNms = CraftItemStack.asNMSCopy(new ItemStack(material));
         // setMaxDamage(null) only resets the *patched* value, not the actual one
         itemNms.remove(DataComponents.MAX_DAMAGE);
         itemNms.remove(DataComponents.TOOL);
         itemNms.remove(DataComponents.ATTRIBUTE_MODIFIERS);
+        itemNms.remove(DataComponents.FOOD);
 
         ItemStack item = itemNms.asBukkitCopy();
         item.editMeta(Damageable.class, meta -> {
@@ -78,6 +84,11 @@ public class CustomItem {
 
         Builder itemName(Component itemName) {
             item.itemName = itemName;
+            return this;
+        }
+
+        Builder material(Material material) {
+            item.material = material;
             return this;
         }
 
