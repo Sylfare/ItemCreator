@@ -12,7 +12,7 @@ import net.kyori.adventure.key.Key;
 import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.util.Log;
 
-public class ItemsReader {
+public class ItemReader {
     
     public static List<CustomItem> readAllItems() {
         File itemsFolder = new File(ItemCreator.getInstance().getDataFolder(), "items");
@@ -42,7 +42,7 @@ public class ItemsReader {
                     return true;
                 }
             })
-            .map(ItemsReader::readItem)
+            .map(ItemReader::readItem)
             .toList();
 
         })

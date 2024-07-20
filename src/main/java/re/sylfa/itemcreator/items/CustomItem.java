@@ -3,7 +3,10 @@ package re.sylfa.itemcreator.items;
 import net.kyori.adventure.key.Key;
 
 public class CustomItem {
-    Key key;
+    private Key key;
+    public Key key() {
+        return this.key;
+    }
     
     public static class Builder {
         CustomItem item = new CustomItem();
