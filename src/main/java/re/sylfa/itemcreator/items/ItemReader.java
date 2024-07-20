@@ -65,10 +65,10 @@ public class ItemReader {
     public static CustomItem readItem(YamlConfiguration config, String folderName, String fileName) {
         Log.log(String.format("Reading %s:%s", folderName, fileName));
         Key key = Key.key(folderName, fileName);
-
         return CustomItem.Builder.builder()
             .key(key)
             .customModelData(config.getInt("model"))
+            .itemName(config.getString("itemName", ""))
             .build();
     }
 }
