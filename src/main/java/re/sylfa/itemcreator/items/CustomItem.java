@@ -18,6 +18,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.component.DataComponents;
 import re.sylfa.itemcreator.ItemCreator;
+import re.sylfa.itemcreator.util.Log;
 
 public class CustomItem {
     private static final String ID = "id";
@@ -26,7 +27,7 @@ public class CustomItem {
     private boolean hasCustomModelData = false;
     private int customModelData;
     private Component itemName;
-    private Material material = Material.DIAMOND_PICKAXE;
+    private Material material;
     private List<Component> lore;
     private int maxDamage;
     private boolean hasMaxDamage = false;
@@ -140,6 +141,8 @@ public class CustomItem {
             if(maxDamage > 0) {
                 item.maxDamage = maxDamage;
                 item.hasMaxDamage = true;
+            } else if (maxDamage < 0) {
+                Log.warn("Negative max damage for %s", item.key.asString());
             }
 
             return this;
@@ -148,6 +151,7 @@ public class CustomItem {
         Builder maxStackSize(int maxStackSize) {
             if(maxStackSize < 1 || maxStackSize > 99) {
                 maxStackSize = 1;
+                Log.warn(String.format("Max stack size for %s is not valid", item.key.asString()));
             }
             
             item.maxStackSize = maxStackSize;
@@ -160,7 +164,7 @@ public class CustomItem {
             }
             JukeboxSong jukeboxSong = RegistryAccess.registryAccess().getRegistry(RegistryKey.JUKEBOX_SONG).get(Key.key(rawJukeboxSong));
             if(jukeboxSong != null) {
-                // HACK there's no JukeboxPlayableComponent builder
+                // HACK there's no JukeboxPlayableComponent constructor
                 JukeboxPlayableComponent jukeboxPlayableComponent = new ItemStack(Material.STONE).getItemMeta().getJukeboxPlayable();
                 jukeboxPlayableComponent.setSong(jukeboxSong);
                 jukeboxPlayableComponent.setShowInTooltip(showInTooltip);
