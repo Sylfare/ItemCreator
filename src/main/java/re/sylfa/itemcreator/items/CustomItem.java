@@ -1,6 +1,7 @@
 package re.sylfa.itemcreator.items;
 
 import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -23,7 +24,9 @@ public class CustomItem {
     private Component itemName;
     private Material material = Material.DIAMOND_PICKAXE;
     private List<Component> lore;
-
+    private int maxDamage;
+    private boolean hasMaxDamage = false;
+    private int maxStackSize;
 
     public Key key() {
         return this.key;
@@ -44,6 +47,14 @@ public class CustomItem {
     public List<Component> lore() {
         return lore;
     }
+
+    public int maxDamage() {
+        return maxDamage;
+    }
+
+    public int maxStackSize() {
+        return maxStackSize;
+    }
     
     public ItemStack asItemStack() {
         var itemNms = CraftItemStack.asNMSCopy(new ItemStack(material));
@@ -59,6 +70,8 @@ public class CustomItem {
             meta.itemName(itemName);
             meta.setCustomModelData(this.hasCustomModelData ? customModelData : null);
             meta.lore(lore);
+            if(hasMaxDamage) meta.setMaxDamage(maxDamage);
+            meta.setMaxStackSize(maxStackSize);
         });
 
         return item;
@@ -68,11 +81,11 @@ public class CustomItem {
         CustomItem item = new CustomItem();
         private MiniMessage mm = MiniMessage.miniMessage();
 
-        public static Builder builder() {
-            return new CustomItem.Builder();
+        public static Builder builder(Key key) {
+            return new CustomItem.Builder().key(key);
         }
         
-        Builder key(Key key) {
+        private Builder key(Key key) {
             item.key = key;
             return this;
         }
@@ -102,6 +115,22 @@ public class CustomItem {
         Builder lore(List<String> lore) {
             if(!lore.isEmpty()) {
                 item.lore = lore.stream().map(line -> mm.deserialize(line)).toList();
+            }
+            return this;
+        }
+
+        Builder maxDamage(int maxDamage) {
+            if(maxDamage > 0) {
+                item.maxDamage = maxDamage;
+                item.hasMaxDamage = true;
+            }
+
+            return this;
+        }
+
+        Builder maxStackSize(int maxStackSize) {
+            if(maxStackSize > 0 && maxStackSize < 100) {
+                item.maxStackSize = maxStackSize;
             }
             return this;
         }

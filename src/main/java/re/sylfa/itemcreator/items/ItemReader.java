@@ -2,7 +2,6 @@ package re.sylfa.itemcreator.items;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -43,11 +42,10 @@ public class ItemReader {
                     return true;
                 }
             })
-            .map(ItemReader::readItem)
-            .toList();
+            .map(ItemReader::readItem);
 
         })
-        .flatMap(Collection::stream)
+        .flatMap(a -> a)
         .toList();     
     }
 
@@ -66,12 +64,14 @@ public class ItemReader {
     public static CustomItem readItem(YamlConfiguration config, String folderName, String fileName) {
         Log.log(String.format("Reading %s:%s", folderName, fileName));
         Key key = Key.key(folderName, fileName);
-        return CustomItem.Builder.builder()
-            .key(key)
+        return CustomItem.Builder.builder(key)
             .customModelData(config.getInt("model"))
             .itemName(config.getString("itemName", ""))
             .material(Material.matchMaterial(config.getString("material", "diamond_pickaxe")))
             .lore(config.getStringList("lore"))
+            .maxDamage(config.getInt("maxDamage"))
+            .maxStackSize(config.getInt("maxStackSize", 1))
+            
             .build();
     }
 }
