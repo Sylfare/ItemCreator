@@ -25,7 +25,7 @@ public class ItemReader {
         return Arrays.stream(itemsFolder.listFiles())
         .filter(file -> {
             if(!file.isDirectory()) {
-                Log.warn(String.format("%s is not an item namespace", file.getName()));
+                Log.warn("%s is not an item namespace", file.getName());
                 return false;
             } else {
                 return true;
@@ -36,14 +36,14 @@ public class ItemReader {
             return Arrays.stream(folder.listFiles())
             .filter(file -> {
                 if(!List.of("yml","yaml").contains(FilenameUtils.getExtension(file.getPath()))) {
-                    Log.warn(String.format("%s is not an item file in %s", file.getName(), folderName));
+                    Log.warn("%s is not an item file in %s", file.getName(), folderName);
                     return false;
                 } else {
                     return true;
                 }
             })
-            .map(ItemReader::readItem);
-
+            .map(ItemReader::readItem)
+            .filter(file -> file != null);
         })
         .flatMap(a -> a)
         .toList();     
@@ -51,19 +51,20 @@ public class ItemReader {
 
     public static CustomItem readItem(File file) {
         String fileName = FilenameUtils.getBaseName(file.getPath());
-        
         String parentName = file.getParentFile().getName();
 
         if(parentName == "items") {
-            Log.warn(String.format("%s is not in a namespace", file.getName()));
+            Log.warn("%s is not in a namespace", file.getName());
+            return null;
         }
     
         return readItem(YamlConfiguration.loadConfiguration(file), parentName, fileName);
     }
 
     public static CustomItem readItem(YamlConfiguration config, String folderName, String fileName) {
-        Log.log(String.format("Reading %s:%s", folderName, fileName));
         Key key = Key.key(folderName, fileName);
+        Log.log("Reading %s", key.asString());
+
         return CustomItem.Builder.builder(key)
             .customModelData(config.getInt("model"))
             .itemName(config.getString("itemName", ""))
