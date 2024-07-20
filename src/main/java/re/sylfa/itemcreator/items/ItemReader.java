@@ -68,6 +68,7 @@ public class ItemReader {
 
         return CustomItem.Builder.builder()
             .key(key)
+            .customModelData(config.getInt("model"))
             .build();
     }
 }
