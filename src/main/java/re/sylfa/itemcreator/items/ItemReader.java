@@ -71,7 +71,7 @@ public class ItemReader {
             .lore(config.getStringList("lore"))
             .maxDamage(config.getInt("maxDamage"))
             .maxStackSize(config.getInt("maxStackSize", 1))
-            
+            .jukeboxPlayableComponent(config.getString("jukeboxSong.name"), config.getBoolean("jukeboxSong.showInTooltip", true))
             .build();
     }
 }

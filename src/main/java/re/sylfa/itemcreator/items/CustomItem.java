@@ -2,13 +2,17 @@ package re.sylfa.itemcreator.items;
 
 import java.util.List;
 
+import org.bukkit.JukeboxSong;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.components.JukeboxPlayableComponent;
 import org.bukkit.persistence.PersistentDataType;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -27,6 +31,7 @@ public class CustomItem {
     private int maxDamage;
     private boolean hasMaxDamage = false;
     private int maxStackSize;
+    private JukeboxPlayableComponent jukeboxPlayableComponent;
 
     public Key key() {
         return this.key;
@@ -55,6 +60,10 @@ public class CustomItem {
     public int maxStackSize() {
         return maxStackSize;
     }
+
+    public JukeboxPlayableComponent jukeboxPlayableComponent() {
+        return jukeboxPlayableComponent;
+    }
     
     public ItemStack asItemStack() {
         var itemNms = CraftItemStack.asNMSCopy(new ItemStack(material));
@@ -72,6 +81,7 @@ public class CustomItem {
             meta.lore(lore);
             if(hasMaxDamage) meta.setMaxDamage(maxDamage);
             meta.setMaxStackSize(maxStackSize);
+            meta.setJukeboxPlayable(jukeboxPlayableComponent);
         });
 
         return item;
@@ -129,9 +139,31 @@ public class CustomItem {
         }
 
         Builder maxStackSize(int maxStackSize) {
-            if(maxStackSize > 0 && maxStackSize < 100) {
-                item.maxStackSize = maxStackSize;
+            if(maxStackSize < 1 || maxStackSize > 99) {
+                maxStackSize = 1;
             }
+            
+            item.maxStackSize = maxStackSize;
+            return this;
+        }
+
+        Builder jukeboxPlayableComponent(String rawJukeboxSong, boolean showInTooltip) {
+            if(rawJukeboxSong == null) {
+                return this;
+            }
+            JukeboxSong jukeboxSong = RegistryAccess.registryAccess().getRegistry(RegistryKey.JUKEBOX_SONG).get(Key.key(rawJukeboxSong));
+            if(jukeboxSong != null) {
+                // HACK there's no JukeboxPlayableComponent builder
+                JukeboxPlayableComponent jukeboxPlayableComponent = new ItemStack(Material.STONE).getItemMeta().getJukeboxPlayable();
+                jukeboxPlayableComponent.setSong(jukeboxSong);
+                jukeboxPlayableComponent.setShowInTooltip(showInTooltip);
+                return jukeboxPlayableComponent(jukeboxPlayableComponent);
+            }
+            return this;
+        }
+        
+        Builder jukeboxPlayableComponent(JukeboxPlayableComponent jukeboxPlayableComponent) {
+            item.jukeboxPlayableComponent = jukeboxPlayableComponent;
             return this;
         }
 
