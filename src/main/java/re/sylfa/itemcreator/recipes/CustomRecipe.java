@@ -1,6 +1,7 @@
 package re.sylfa.itemcreator.recipes;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 
 import net.kyori.adventure.key.Key;
 import re.sylfa.itemcreator.ItemCreator;
@@ -20,14 +22,18 @@ public class CustomRecipe {
     String keyValue;
     RecipeType type;
     Map<Character, RecipeChoice> shapedIngredients;
+    List<RecipeChoice> ingredients;
     ItemStack result;
     String[] shape;
     
     public Recipe asRecipe() {
+        NamespacedKey key = NamespacedKey.fromString(keyValue, ItemCreator.getInstance());
+
         if(result == null || result.getType() == Material.AIR) {
             Log.warn("Recipe %s has no result", keyValue);
             return null;
         }
+
         switch (type) {
             case SHAPED:
                 if(shape.length == 0) {
@@ -38,11 +44,20 @@ public class CustomRecipe {
                     Log.warn("Recipe %s has no ingredients.", keyValue);
                     return null;
                 }
-                ShapedRecipe recipe = new ShapedRecipe(NamespacedKey.fromString(keyValue, ItemCreator.getInstance()), result);
+                ShapedRecipe shapedRecipe = new ShapedRecipe(key, result);
 
-                recipe.shape(shape);
-                shapedIngredients.forEach((key,ingredient) -> recipe.setIngredient(key, ingredient));
-                return recipe;
+                shapedRecipe.shape(shape);
+                shapedIngredients.forEach((ingredientKey, ingredient) -> shapedRecipe.setIngredient(ingredientKey, ingredient));
+                return shapedRecipe;
+
+            case SHAPELESS:
+                if(ingredients == null || ingredients.size() == 0) {
+                    Log.warn("Recipe %s has no ingredients.", keyValue);
+                    return null;
+                }
+                ShapelessRecipe shapelessRecipe = new ShapelessRecipe(key, result);
+                ingredients.forEach(ingredient -> shapelessRecipe.addIngredient(ingredient));
+                return shapelessRecipe;
         
             default:
                 return null;
@@ -63,7 +78,7 @@ public class CustomRecipe {
         }
 
         private Builder type(String rawType) {
-            RecipeType type = RecipeType.valueOf(rawType);
+            RecipeType type = RecipeType.valueOf(rawType.toUpperCase());
             if(type != null) {
                 recipe.type = type;
             } else {
@@ -74,6 +89,10 @@ public class CustomRecipe {
         }
 
         Builder shapedIngredients(Map<Character, String> shapedIngredients) {
+            if(shapedIngredients.entrySet().size() == 0) {
+                return this;
+            }
+
             Map<Character, ItemStack> parsedIngredients = shapedIngredients.entrySet().stream()
                 .collect(Collectors.toMap(
                     entry -> entry.getKey(),
@@ -94,6 +113,23 @@ public class CustomRecipe {
             return this;
         }
 
+        Builder ingredients(List<String> ingredients) {
+            if(ingredients.size() > 9) {
+                Log.warn("Too many ingredients for recipe %s", recipe.keyValue);
+                return this;
+            }
+            
+            List<ItemStack> parsedIngredients = ingredients.stream().map(ingredient -> ItemCreator.getItemRegistry().parse(Key.key(ingredient))).toList();
+            var unknownIngredient = ingredients.stream().filter(ingredient -> ingredient == null).findAny();
+            if(unknownIngredient.isPresent()) {
+                Log.warn("Unknown ingredient found for recipe %s", recipe.keyValue);
+            }
+            // HACK why .toList() is not working here??
+            List<RecipeChoice> recipeChoices = parsedIngredients.stream().map(RecipeChoice.ExactChoice::new).collect(Collectors.toList());
+            recipe.ingredients = recipeChoices;
+            return this;
+        }
+
         Builder result(String result, int amount) {
             if(amount < 1 || amount > 99) {
                 Log.warn("Bad result amount for %s: %d", recipe.keyValue, amount);
@@ -101,6 +137,7 @@ public class CustomRecipe {
             }
             ItemStack item = itemRegistry.parse(Key.key(result));
             if(item != null) {
+                item.setAmount(amount);
                 recipe.result = item;
             } else {
                 Log.warn("Bad result material for %s: %s", recipe.keyValue, result);

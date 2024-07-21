@@ -3,6 +3,7 @@ package re.sylfa.itemcreator.recipes;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
@@ -41,16 +42,22 @@ public class RecipeReader {
 
     public static CustomRecipe readRecipe(YamlConfiguration config, String fileName) {
         Log.log("Reading recipe %s", fileName);
-        var shapedIngredients = config.getConfigurationSection("shapedIngredients").getValues(false)
+        Map<Character, String> shapedIngredients;
+        if(config.isSet("shapedIngredients")) {
+            shapedIngredients = config.getConfigurationSection("shapedIngredients").getValues(false)
             .entrySet().stream().collect(Collectors.toMap(
             entry -> entry.getKey().charAt(0),
             entry -> entry.getValue() instanceof String str ? str : ""
         ));
+        } else {
+            shapedIngredients = Map.of();
+        }
 
         return CustomRecipe.Builder.builder(fileName, config.getString("type"))
             .shape(config.getStringList("shape").toArray(String[]::new))
             .shapedIngredients(shapedIngredients)
-            .result(config.getString("result.item"), config.getInt("result.item", 1))
+            .ingredients(config.getStringList("ingredients"))
+            .result(config.getString("result.item"), config.getInt("result.amount", 1))
             .build();
     }
 }
