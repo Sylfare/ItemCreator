@@ -58,6 +58,7 @@ public class RecipeReader {
             .shapedIngredients(shapedIngredients)
             .ingredients(config.getStringList("ingredients"))
             .ingredient(config.getString("ingredient"))
+            .cooking((float)config.getDouble("cooking.experience", 0), config.getInt("cooking.time", 200))
             .result(config.getString("result.item"), config.getInt("result.amount", 1))
             .build();
     }

@@ -7,11 +7,16 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.BlastingRecipe;
+import org.bukkit.inventory.CampfireRecipe;
+import org.bukkit.inventory.CookingRecipe;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.SmokingRecipe;
 import org.bukkit.inventory.StonecuttingRecipe;
 
 import net.kyori.adventure.key.Key;
@@ -27,6 +32,8 @@ public class CustomRecipe {
     RecipeChoice ingredient;
     ItemStack result;
     String[] shape;
+    int cookingTime;
+    float cookingExperience;
     
     public Recipe asRecipe() {
         NamespacedKey key = NamespacedKey.fromString(keyValue, ItemCreator.getInstance());
@@ -67,6 +74,34 @@ public class CustomRecipe {
                     return null;
                 }
                 return new StonecuttingRecipe(key, result, ingredient);
+
+            case FURNACE:
+                if(ingredient == null) {
+                    Log.warn("Recipe %s has no ingredients.", keyValue);
+                    return null;
+                }
+                return new FurnaceRecipe(key, result, ingredient, cookingExperience, cookingTime);
+
+            case CAMPFIRE:
+                if(ingredient == null) {
+                    Log.warn("Recipe %s has no ingredients.", keyValue);
+                    return null;
+                }
+                return new CampfireRecipe(key, result, ingredient, cookingExperience, cookingTime);
+
+            case BLASTING:
+                if(ingredient == null) {
+                    Log.warn("Recipe %s has no ingredients.", keyValue);
+                    return null;
+                }
+                return new BlastingRecipe(key, result, ingredient, cookingExperience, cookingTime);
+
+            case SMOKING:
+                if(ingredient == null) {
+                    Log.warn("Recipe %s has no ingredients.", keyValue);
+                    return null;
+                }
+                return new SmokingRecipe(key, result, ingredient, cookingExperience, cookingTime);
 
             default:
                 return null;
@@ -183,6 +218,20 @@ public class CustomRecipe {
             }
 
             recipe.shape = shape;
+            return this;
+        }
+
+        Builder cooking(float experience, int cookingTime) {
+            if(experience < 0) {
+                Log.warn("Furnace experience is negative in recipe %s", recipe.keyValue);
+                return this;
+            }
+            if(cookingTime < 1) {
+                Log.warn("Cooking time is negative in recipe %s", recipe.keyValue);
+                return this;
+            }
+            recipe.cookingExperience = experience;
+            recipe.cookingTime = cookingTime;
             return this;
         }
 
