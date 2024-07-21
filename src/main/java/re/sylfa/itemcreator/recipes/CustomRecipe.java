@@ -12,6 +12,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.StonecuttingRecipe;
 
 import net.kyori.adventure.key.Key;
 import re.sylfa.itemcreator.ItemCreator;
@@ -23,6 +24,7 @@ public class CustomRecipe {
     RecipeType type;
     Map<Character, RecipeChoice> shapedIngredients;
     List<RecipeChoice> ingredients;
+    RecipeChoice ingredient;
     ItemStack result;
     String[] shape;
     
@@ -59,10 +61,18 @@ public class CustomRecipe {
                 ingredients.forEach(ingredient -> shapelessRecipe.addIngredient(ingredient));
                 return shapelessRecipe;
         
+            case STONECUTTING:
+                if(ingredient == null) {
+                    Log.warn("Recipe %s has no ingredients.", keyValue);
+                    return null;
+                }
+                return new StonecuttingRecipe(key, result, ingredient);
+
             default:
                 return null;
         }
     }
+
 
     public static class Builder {
         CustomRecipe recipe = new CustomRecipe();
@@ -89,7 +99,7 @@ public class CustomRecipe {
         }
 
         Builder shapedIngredients(Map<Character, String> shapedIngredients) {
-            if(shapedIngredients.entrySet().size() == 0) {
+            if(shapedIngredients == null || shapedIngredients.entrySet().size() == 0) {
                 return this;
             }
 
@@ -127,6 +137,21 @@ public class CustomRecipe {
             // HACK why .toList() is not working here??
             List<RecipeChoice> recipeChoices = parsedIngredients.stream().map(RecipeChoice.ExactChoice::new).collect(Collectors.toList());
             recipe.ingredients = recipeChoices;
+            return this;
+        }
+
+        Builder ingredient(String ingredient) {
+            if(ingredient == null || ingredient.isBlank()) {
+                return this;
+            }
+
+            ItemStack item = itemRegistry.parse(Key.key(ingredient));
+            if(item == null) {
+                Log.warn("Unknown ingredient found for recipe %s", recipe.keyValue);
+                return this;
+            }
+
+            recipe.ingredient = new RecipeChoice.ExactChoice(item);
             return this;
         }
 

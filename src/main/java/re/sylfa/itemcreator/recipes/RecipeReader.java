@@ -57,6 +57,7 @@ public class RecipeReader {
             .shape(config.getStringList("shape").toArray(String[]::new))
             .shapedIngredients(shapedIngredients)
             .ingredients(config.getStringList("ingredients"))
+            .ingredient(config.getString("ingredient"))
             .result(config.getString("result.item"), config.getInt("result.amount", 1))
             .build();
     }
