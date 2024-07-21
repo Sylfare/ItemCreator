@@ -20,13 +20,12 @@ public class ItemCreatorCommand implements Command{
     @Override
     public LiteralCommandNode<CommandSourceStack> command() {
         return literal("itemcreator")
+        .requires(ctx -> ctx.getSender().hasPermission("itemcreator"))
         .executes(this::help)
         .then(literal("give")
             .then(argument("itemKey", CustomItemArgumentType.customItem())
                 .executes(this::giveItem)
-            
-            )
-        
+            )        
         )
         .build();
     }

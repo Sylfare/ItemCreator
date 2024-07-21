@@ -67,7 +67,7 @@ public class ItemReader {
 
         return CustomItem.Builder.builder(key)
             .customModelData(config.getInt("model"))
-            .itemName(config.getString("itemName", ""))
+            .itemName(config.getString("name", ""))
             .material(Material.matchMaterial(config.getString("material", "diamond_pickaxe")))
             .lore(config.getStringList("lore"))
             .maxDamage(config.getInt("maxDamage"))

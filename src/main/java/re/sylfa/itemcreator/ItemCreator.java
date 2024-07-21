@@ -3,8 +3,11 @@ package re.sylfa.itemcreator;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.permissions.CommandPermissions;
 
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
@@ -26,6 +29,7 @@ public class ItemCreator extends JavaPlugin {
         instance = this;
         Log.log("Enabled!");
         init();
+        registerPermissions();
         registerCommands();
     }
 
@@ -41,6 +45,10 @@ public class ItemCreator extends JavaPlugin {
         itemRegistry.add(ItemReader.readAllItems().toArray(CustomItem[]::new));
         
         RecipeReader.readAllRecipes().forEach(recipe -> Bukkit.addRecipe(recipe.asRecipe()));;
+    }
+
+    public void registerPermissions() {
+        CommandPermissions.registerPermissions(new Permission("itemcreator.give", PermissionDefault.OP));
     }
 
     public void registerCommands() {
