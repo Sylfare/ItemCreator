@@ -59,6 +59,7 @@ public class RecipeReader {
             .ingredients(config.getStringList("ingredients"))
             .ingredient(config.getString("ingredient"))
             .cooking((float)config.getDouble("cooking.experience", 0), config.getInt("cooking.time", 200))
+            .smithing(config.getString("base"), config.getString("addition"), config.getString("template"))
             .result(config.getString("result.item"), config.getInt("result.amount", 1))
             .build();
     }

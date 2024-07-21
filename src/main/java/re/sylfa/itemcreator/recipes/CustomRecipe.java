@@ -9,13 +9,13 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.CampfireRecipe;
-import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.SmithingTransformRecipe;
 import org.bukkit.inventory.SmokingRecipe;
 import org.bukkit.inventory.StonecuttingRecipe;
 
@@ -34,6 +34,9 @@ public class CustomRecipe {
     String[] shape;
     int cookingTime;
     float cookingExperience;
+    RecipeChoice smithingBase;
+    RecipeChoice smithingTemplate;
+    RecipeChoice smithingAddition;
     
     public Recipe asRecipe() {
         NamespacedKey key = NamespacedKey.fromString(keyValue, ItemCreator.getInstance());
@@ -102,6 +105,21 @@ public class CustomRecipe {
                     return null;
                 }
                 return new SmokingRecipe(key, result, ingredient, cookingExperience, cookingTime);
+
+            case SMITHING:
+                if(smithingBase == null) {
+                    Log.warn("Recipe %s has no base.", keyValue);
+                    return null;
+                }
+                if(smithingAddition == null) {
+                    Log.warn("Recipe %s has no addition.", keyValue);
+                    return null;
+                }
+                if(smithingTemplate == null) {
+                    Log.warn("Recipe %s has no template.", keyValue);
+                    return null;
+                }
+                return new SmithingTransformRecipe(key, result, smithingTemplate, smithingBase, smithingAddition);
 
             default:
                 return null;
@@ -232,6 +250,33 @@ public class CustomRecipe {
             }
             recipe.cookingExperience = experience;
             recipe.cookingTime = cookingTime;
+            return this;
+        }
+
+        Builder smithing(String rawBase, String rawAddition, String rawTemplate) {
+            if(rawBase == null && rawAddition == null && rawTemplate == null) {
+                return this;
+            }
+
+            ItemStack base = itemRegistry.parse(Key.key(rawBase));
+            if(base == null) {
+                Log.warn("Unknown base item for recipe %s: %s", recipe.keyValue, rawBase);
+                return this;
+            }
+            ItemStack addition = itemRegistry.parse(Key.key(rawAddition));
+            if(addition == null) {
+                Log.warn("Unknown addition item for recipe %s: %s", recipe.keyValue, rawAddition);
+                return this;
+            }
+            ItemStack template = itemRegistry.parse(Key.key(rawTemplate));
+            if(template == null) {
+                Log.warn("Unknown template item for recipe %s: %s", recipe.keyValue, rawTemplate);
+                return this;
+            }
+
+            recipe.smithingBase = new RecipeChoice.ExactChoice(base);
+            recipe.smithingAddition = new RecipeChoice.ExactChoice(addition);
+            recipe.smithingTemplate = new RecipeChoice.ExactChoice(template);
             return this;
         }
 

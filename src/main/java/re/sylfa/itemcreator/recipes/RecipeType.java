@@ -8,4 +8,5 @@ public enum RecipeType {
     CAMPFIRE,
     SMOKING,
     BLASTING,
+    SMITHING,
 }
