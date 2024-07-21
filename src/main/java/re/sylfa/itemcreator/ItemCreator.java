@@ -2,6 +2,7 @@ package re.sylfa.itemcreator;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,7 +39,8 @@ public class ItemCreator extends JavaPlugin {
 
     public void init(){
         itemRegistry.add(ItemReader.readAllItems().toArray(CustomItem[]::new));
-        RecipeReader.readAllRecipes();
+        
+        RecipeReader.readAllRecipes().forEach(recipe -> Bukkit.addRecipe(recipe.asRecipe()));;
     }
 
     public void registerCommands() {
