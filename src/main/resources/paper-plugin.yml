@@ -1,4 +1,7 @@
 name: ItemCreator
+description: A lightweight custom item and recipe manager
+authors:
+  - Sylfare
 main: re.sylfa.itemcreator.ItemCreator
-version: 0.0.1
+version: 1.0.0
 api-version: "1.21"
