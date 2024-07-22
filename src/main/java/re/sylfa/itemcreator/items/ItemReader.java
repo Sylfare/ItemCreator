@@ -64,7 +64,6 @@ public class ItemReader {
     public static CustomItem readItem(YamlConfiguration config, String folderName, String fileName) {
         Key key = Key.key(folderName, fileName);
         Log.log("Reading item %s", key.asString());
-
         return CustomItem.Builder.builder(key)
             .customModelData(config.getInt("model"))
             .itemName(config.getString("name", ""))
@@ -74,6 +73,7 @@ public class ItemReader {
             .maxStackSize(config.getInt("maxStackSize", 1))
             .jukeboxPlayableComponent(config.getString("jukeboxSong.name"), config.getBoolean("jukeboxSong.showInTooltip", true))
             .enchantmentGlintOverride(config.getBoolean("enchantmentGlintOverride.set"), config.getBoolean("enchantmentGlintOverride.value"))
+            .tool(config.getConfigurationSection("tool"))
             .build();
     }
 }

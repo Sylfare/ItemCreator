@@ -1,14 +1,19 @@
 package re.sylfa.itemcreator.items;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
 
 import org.bukkit.JukeboxSong;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.components.JukeboxPlayableComponent;
+import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.persistence.PersistentDataType;
 
 import io.papermc.paper.registry.RegistryAccess;
@@ -35,6 +40,11 @@ public class CustomItem {
     private JukeboxPlayableComponent jukeboxPlayableComponent;
     private boolean hasEnchantmentGlintOverride;
     private boolean enchantmentGlintOverride;
+
+    private boolean isTool = false;
+    private float toolDefaultMiningSpeed;
+    private int toolDamagePerBlock;
+    public List<ToolRule> toolRules;
 
     public Key key() {
         return this.key;
@@ -89,6 +99,13 @@ public class CustomItem {
             meta.setJukeboxPlayable(jukeboxPlayableComponent);
             if(hasEnchantmentGlintOverride) {
                 meta.setEnchantmentGlintOverride(enchantmentGlintOverride);
+            }
+            if(isTool) {
+                ToolComponent tool = meta.getTool();
+                tool.setDamagePerBlock(toolDamagePerBlock);
+                tool.setDefaultMiningSpeed(toolDefaultMiningSpeed);
+                toolRules.forEach(toolRule -> tool.addRule(toolRule.material(), toolRule.miningSpeed(), toolRule.correctForDrops()));
+                meta.setTool(tool);
             }
         });
 
@@ -184,8 +201,78 @@ public class CustomItem {
             return this;
         }
 
+        Builder tool(ConfigurationSection tool) {
+            if(tool == null) {
+                return this;
+            }
+            
+            item.isTool = true;
+            item.toolDamagePerBlock = tool.getInt("damagePerBlock", 1);
+            item.toolDefaultMiningSpeed = (float) tool.getDouble("defaultMiningSpeed", 1);
+            
+            // verify if each rule is well formed
+            List<ToolRule> toolRules = tool.getList("rules").stream().map(rule -> {
+                if(rule instanceof Map map) {
+                    return map;
+                } else {
+                    Log.warn("A tool rule for item %s is invalid.", item.key.asString());
+                    return null;
+                }
+            })
+            .filter(rule -> rule != null)
+            // parse each rule
+            .map(rule -> {
+                Object rawMaterials = rule.get("materials");
+                List<Material> materials = new ArrayList<Material>();
+                if(rawMaterials instanceof List materialList) {
+                    for(Object str : materialList) {
+                        if(str instanceof String rawMaterial) {
+                            Material material = Material.matchMaterial(rawMaterial);
+                            if(material != null) {
+                                materials.add(material);
+                            } else {
+                                Log.warn("Material for tool item %s not found: %s", item.key.asString(), rawMaterial);
+                                return null;
+                            }
+                        } else {
+                            Log.warn("Malformed material for tool item %s", item.key.asString());
+                            return null;
+                        }
+                    }
+                } else {
+                    Log.warn("A rule's material list for tool item %s is malformed", item.key.asString());
+                    return null;
+                }
+
+                Float miningSpeed = null;
+                Object rawMiningSpeed = rule.get("miningSpeed");
+                if(rawMiningSpeed != null) {
+                    try {
+                        miningSpeed = Float.valueOf(rawMiningSpeed.toString());
+                    } catch (Exception e) {
+                        Log.warn("Error while parsing raw mining speed for tool %s", item.key.asString());
+                    }
+                }
+
+                Boolean correctForDrops = null;
+                Object rawCorrectForDrops = rule.get("correctForDrops");
+                if(rawCorrectForDrops != null) {
+                    correctForDrops = rawCorrectForDrops.toString().toLowerCase().trim().equals("true");
+                }
+                
+
+                return new ToolRule(materials, miningSpeed, correctForDrops);
+            })
+            .toList()
+            ;
+            item.toolRules = toolRules;
+            return this;
+        }
+
         CustomItem build() {
             return item;
         }
     }
+
+    record ToolRule(Collection<Material> material, Float miningSpeed, Boolean correctForDrops) { }
 }
