@@ -5,6 +5,7 @@ import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.bukkit.entity.Player;
 
@@ -45,8 +46,14 @@ public class ItemCreatorCommand implements Command{
 
     private int giveItem(CommandContext<CommandSourceStack> ctx) {
         if(ctx.getSource().getSender() instanceof Player player) {
-            CustomItem item = ctx.getArgument("itemKey", CustomItem.class);
-            player.getInventory().addItem(item.asItemStack());
+            @SuppressWarnings("unchecked")
+            Optional<CustomItem> item = ctx.getArgument("itemKey", Optional.class);
+            if(item.isPresent()) {
+                player.getInventory().addItem(item.get().asItemStack());
+            } else {
+                player.sendMessage(Component.text("Error: not a valid custom item.", NamedTextColor.RED));
+            }
+            
         }
         return SINGLE_SUCCESS;
     }
