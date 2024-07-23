@@ -26,7 +26,7 @@ import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.util.Log;
 
 public class CustomItem {
-    private static final String ID = "id";
+    public static final NamespacedKey ID = NamespacedKey.fromString("id", ItemCreator.getInstance());
 
     private Key key;
     private boolean hasCustomModelData = false;
@@ -88,7 +88,7 @@ public class CustomItem {
 
         ItemStack item = itemNms.asBukkitCopy();
         item.editMeta(Damageable.class, meta -> {
-            meta.getPersistentDataContainer().set(NamespacedKey.fromString(ID, ItemCreator.getInstance()), PersistentDataType.STRING, key.asString());
+            meta.getPersistentDataContainer().set(ID, PersistentDataType.STRING, key.asString());
             meta.itemName(itemName);
             meta.setCustomModelData(this.hasCustomModelData ? customModelData : null);
             meta.lore(lore);

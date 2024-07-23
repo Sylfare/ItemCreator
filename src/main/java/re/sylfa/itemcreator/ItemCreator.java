@@ -11,6 +11,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.permissions.CommandPermissions;
 
@@ -21,6 +22,7 @@ import re.sylfa.itemcreator.commands.ItemCreatorCommand;
 import re.sylfa.itemcreator.items.CustomItem;
 import re.sylfa.itemcreator.items.ItemReader;
 import re.sylfa.itemcreator.items.ItemRegistry;
+import re.sylfa.itemcreator.items.RepairListener;
 import re.sylfa.itemcreator.recipes.CustomRecipe;
 import re.sylfa.itemcreator.recipes.RecipeReader;
 import re.sylfa.itemcreator.recipes.RecipeRegistry;
@@ -34,11 +36,13 @@ public class ItemCreator extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        PluginManager pm = Bukkit.getPluginManager();
         instance = this;
         Log.log("Enabled!");
         init();
         registerPermissions();
         registerCommands();
+        pm.registerEvents(new RepairListener(), this);
     }
 
     public static ItemCreator getInstance() {

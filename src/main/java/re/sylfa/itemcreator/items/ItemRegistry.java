@@ -5,7 +5,9 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
 import java.util.Arrays;
@@ -56,6 +58,14 @@ public class ItemRegistry {
         };
 
         Log.warn("Material not found: %s", key.asString());
+        return null;
+    }
+
+    public CustomItem matchCustomItem(ItemStack itemStack) {
+        if(itemStack.getPersistentDataContainer().has(CustomItem.ID)) {
+            NamespacedKey key = NamespacedKey.fromString(itemStack.getPersistentDataContainer().get(CustomItem.ID, PersistentDataType.STRING));
+            return itemList.get(key);
+        }
         return null;
     }
 }
