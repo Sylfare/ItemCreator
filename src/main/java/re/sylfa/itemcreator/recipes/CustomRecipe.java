@@ -38,9 +38,11 @@ public class CustomRecipe {
     RecipeChoice smithingTemplate;
     RecipeChoice smithingAddition;
     
-    public Recipe asRecipe() {
-        NamespacedKey key = NamespacedKey.fromString(keyValue, ItemCreator.getInstance());
+    public NamespacedKey key() {
+        return NamespacedKey.fromString(keyValue, ItemCreator.getInstance());
+    }
 
+    public Recipe asRecipe() {
         if(result == null || result.getType() == Material.AIR) {
             Log.warn("Recipe %s has no result", keyValue);
             return null;
@@ -56,7 +58,7 @@ public class CustomRecipe {
                     Log.warn("Recipe %s has no ingredients.", keyValue);
                     return null;
                 }
-                ShapedRecipe shapedRecipe = new ShapedRecipe(key, result);
+                ShapedRecipe shapedRecipe = new ShapedRecipe(key(), result);
 
                 shapedRecipe.shape(shape);
                 shapedIngredients.forEach((ingredientKey, ingredient) -> shapedRecipe.setIngredient(ingredientKey, ingredient));
@@ -67,7 +69,7 @@ public class CustomRecipe {
                     Log.warn("Recipe %s has no ingredients.", keyValue);
                     return null;
                 }
-                ShapelessRecipe shapelessRecipe = new ShapelessRecipe(key, result);
+                ShapelessRecipe shapelessRecipe = new ShapelessRecipe(key(), result);
                 ingredients.forEach(ingredient -> shapelessRecipe.addIngredient(ingredient));
                 return shapelessRecipe;
         
@@ -76,35 +78,35 @@ public class CustomRecipe {
                     Log.warn("Recipe %s has no ingredients.", keyValue);
                     return null;
                 }
-                return new StonecuttingRecipe(key, result, ingredient);
+                return new StonecuttingRecipe(key(), result, ingredient);
 
             case FURNACE:
                 if(ingredient == null) {
                     Log.warn("Recipe %s has no ingredients.", keyValue);
                     return null;
                 }
-                return new FurnaceRecipe(key, result, ingredient, cookingExperience, cookingTime);
+                return new FurnaceRecipe(key(), result, ingredient, cookingExperience, cookingTime);
 
             case CAMPFIRE:
                 if(ingredient == null) {
                     Log.warn("Recipe %s has no ingredients.", keyValue);
                     return null;
                 }
-                return new CampfireRecipe(key, result, ingredient, cookingExperience, cookingTime);
+                return new CampfireRecipe(key(), result, ingredient, cookingExperience, cookingTime);
 
             case BLASTING:
                 if(ingredient == null) {
                     Log.warn("Recipe %s has no ingredients.", keyValue);
                     return null;
                 }
-                return new BlastingRecipe(key, result, ingredient, cookingExperience, cookingTime);
+                return new BlastingRecipe(key(), result, ingredient, cookingExperience, cookingTime);
 
             case SMOKING:
                 if(ingredient == null) {
                     Log.warn("Recipe %s has no ingredients.", keyValue);
                     return null;
                 }
-                return new SmokingRecipe(key, result, ingredient, cookingExperience, cookingTime);
+                return new SmokingRecipe(key(), result, ingredient, cookingExperience, cookingTime);
 
             case SMITHING:
                 if(smithingBase == null) {
@@ -119,7 +121,7 @@ public class CustomRecipe {
                     Log.warn("Recipe %s has no template.", keyValue);
                     return null;
                 }
-                return new SmithingTransformRecipe(key, result, smithingTemplate, smithingBase, smithingAddition);
+                return new SmithingTransformRecipe(key(), result, smithingTemplate, smithingBase, smithingAddition);
 
             default:
                 return null;

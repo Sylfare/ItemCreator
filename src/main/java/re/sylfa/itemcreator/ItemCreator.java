@@ -1,8 +1,13 @@
 package re.sylfa.itemcreator;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
@@ -16,13 +21,16 @@ import re.sylfa.itemcreator.commands.ItemCreatorCommand;
 import re.sylfa.itemcreator.items.CustomItem;
 import re.sylfa.itemcreator.items.ItemReader;
 import re.sylfa.itemcreator.items.ItemRegistry;
+import re.sylfa.itemcreator.recipes.CustomRecipe;
 import re.sylfa.itemcreator.recipes.RecipeReader;
+import re.sylfa.itemcreator.recipes.RecipeRegistry;
 import re.sylfa.itemcreator.util.Log;
 
 public class ItemCreator extends JavaPlugin {
     
     private static ItemCreator instance;
     private static ItemRegistry itemRegistry = new ItemRegistry();
+    private static RecipeRegistry recipeRegistry = new RecipeRegistry();
 
     @Override
     public void onEnable() {
@@ -41,10 +49,25 @@ public class ItemCreator extends JavaPlugin {
         return itemRegistry;
     }
 
+    public static RecipeRegistry getRecipeRegistry() {
+        return recipeRegistry;
+    }
+
     public void init(){
+        itemRegistry.removeAll();
         itemRegistry.add(ItemReader.readAllItems().toArray(CustomItem[]::new));
-        
-        RecipeReader.readAllRecipes().forEach(recipe -> Bukkit.addRecipe(recipe.asRecipe()));;
+
+        List<CustomRecipe> readRecipes = RecipeReader.readAllRecipes();
+        Map<NamespacedKey, Recipe> readRecipesMap = readRecipes.stream().collect(Collectors.toMap(r -> r.key(), r -> r.asRecipe()));
+        recipeRegistry.getAll().keySet().forEach(key -> Log.log("Removing %s: %b", key.asString(), Bukkit.removeRecipe(key)));
+        recipeRegistry.removeAll();
+
+        readRecipes.forEach(recipeRegistry::add);
+        readRecipesMap.values().forEach(r -> Bukkit.addRecipe(r, true));
+    }
+
+    public void reload() {
+        init();
     }
 
     public void registerPermissions() {

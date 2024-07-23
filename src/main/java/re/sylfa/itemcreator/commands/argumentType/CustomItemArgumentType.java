@@ -2,6 +2,7 @@ package re.sylfa.itemcreator.commands.argumentType;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
+import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +18,7 @@ import net.kyori.adventure.key.Key;
 import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.items.CustomItem;
 
-public class CustomItemArgumentType implements CustomArgumentType.Converted<CustomItem, Key>{
+public class CustomItemArgumentType implements CustomArgumentType.Converted<Optional<CustomItem>, Key>{
 
     public static CustomItemArgumentType customItem() {
         return new CustomItemArgumentType();
@@ -29,8 +30,8 @@ public class CustomItemArgumentType implements CustomArgumentType.Converted<Cust
     }
 
     @Override
-    public @NotNull CustomItem convert(@NotNull Key key) throws CommandSyntaxException {
-        return ItemCreator.getItemRegistry().get(key);
+    public @NotNull Optional<CustomItem> convert(@NotNull Key key) throws CommandSyntaxException {
+        return Optional.ofNullable(ItemCreator.getItemRegistry().get(key));
     }
 
     @Override

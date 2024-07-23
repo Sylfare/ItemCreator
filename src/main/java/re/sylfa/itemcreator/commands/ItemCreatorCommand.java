@@ -5,6 +5,7 @@ import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.bukkit.entity.Player;
 
@@ -12,6 +13,9 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.commands.argumentType.CustomItemArgumentType;
 import re.sylfa.itemcreator.items.CustomItem;
 
@@ -25,8 +29,9 @@ public class ItemCreatorCommand implements Command{
         .then(literal("give")
             .then(argument("itemKey", CustomItemArgumentType.customItem())
                 .executes(this::giveItem)
-            )        
+            )
         )
+        .then(literal("reload").executes(this::reload))
         .build();
     }
     @Override
@@ -41,8 +46,21 @@ public class ItemCreatorCommand implements Command{
 
     private int giveItem(CommandContext<CommandSourceStack> ctx) {
         if(ctx.getSource().getSender() instanceof Player player) {
-            player.getInventory().addItem(ctx.getArgument("itemKey", CustomItem.class).asItemStack());
+            @SuppressWarnings("unchecked")
+            Optional<CustomItem> item = ctx.getArgument("itemKey", Optional.class);
+            if(item.isPresent()) {
+                player.getInventory().addItem(item.get().asItemStack());
+            } else {
+                player.sendMessage(Component.text("Error: not a valid custom item.", NamedTextColor.RED));
+            }
+            
         }
+        return SINGLE_SUCCESS;
+    }
+
+    private int reload(CommandContext<CommandSourceStack> ctx) {
+        ItemCreator.getInstance().reload();
+        ctx.getSource().getSender().sendMessage(Component.text("ItemCreator has been reloaded.", NamedTextColor.GREEN));
         return SINGLE_SUCCESS;
     }
 
