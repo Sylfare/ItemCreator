@@ -7,7 +7,7 @@
 
 plugins {
 	`java-library`
-    id("io.papermc.paperweight.userdev") version "1.7.1"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
 }
 
 repositories {
@@ -21,9 +21,9 @@ repositories {
 
 dependencies {
     compileOnly("com.mojang:brigadier:1.0.18")
-    implementation("commons-io:commons-io:2.6")
-    paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
-    implementation("net.kyori:adventure-text-minimessage:4.17.0")
+    implementation("commons-io:commons-io:2.7")
+    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
+    implementation("net.kyori:adventure-text-minimessage:4.18.0")
 }
 
 java {
