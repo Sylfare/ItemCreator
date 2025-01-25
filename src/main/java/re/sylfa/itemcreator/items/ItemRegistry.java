@@ -17,7 +17,7 @@ public class ItemRegistry {
     final Map<Key, CustomItem> itemList = new HashMap<>();
 
     public void add(CustomItem... item) {
-        Arrays.stream(item).forEach(i -> itemList.put(i.key(), i));;
+        Arrays.stream(item).forEach(i -> itemList.put(i.key(), i));
     }
 
     @Nullable
@@ -44,7 +44,7 @@ public class ItemRegistry {
     public ItemStack parse(Key key) {
         // first, try to get Minecraft material
 
-        if(key.namespace() == Key.MINECRAFT_NAMESPACE) {
+        if(key.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
             Material material = Material.matchMaterial(key.value());
             if (material != null) return new ItemStack(material);
         }

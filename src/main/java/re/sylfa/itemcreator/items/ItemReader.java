@@ -1,12 +1,15 @@
 package re.sylfa.itemcreator.items;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.YamlConfiguration;
+
+import com.mojang.authlib.minecraft.client.ObjectMapper;
 
 import net.kyori.adventure.key.Key;
 import re.sylfa.itemcreator.ItemCreator;
@@ -14,6 +17,8 @@ import re.sylfa.itemcreator.util.Log;
 
 public class ItemReader {
     
+    public static final ObjectMapper objectMapper = ObjectMapper.create();
+
     public static List<CustomItem> readAllItems() {
         File itemsFolder = new File(ItemCreator.getInstance().getDataFolder(), "items");
         if(!itemsFolder.exists()) {
@@ -35,7 +40,7 @@ public class ItemReader {
             String folderName = folder.getName();
             return Arrays.stream(folder.listFiles())
             .filter(file -> {
-                if(!List.of("yml","yaml").contains(FilenameUtils.getExtension(file.getPath()))) {
+                if(!"json".equals(FilenameUtils.getExtension(file.getPath()))) {
                     Log.warn("%s is not an item file in %s", file.getName(), folderName);
                     return false;
                 } else {
@@ -57,23 +62,42 @@ public class ItemReader {
             Log.warn("%s item is not in a namespace", file.getName());
             return null;
         }
-    
-        return readItem(YamlConfiguration.loadConfiguration(file), parentName, fileName);
+
+        try {
+            return readItemJson(readFile(file), parentName, fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public static CustomItem readItem(YamlConfiguration config, String folderName, String fileName) {
+    public static CustomItem readItemJson(String config, String folderName, String fileName) {
         Key key = Key.key(folderName, fileName);
         Log.log("Reading item %s", key.asString());
 
-        return CustomItem.Builder.builder(key)
-            .customModelData(config.getInt("model"))
-            .itemName(config.getString("name", ""))
-            .material(Material.matchMaterial(config.getString("material", "diamond_pickaxe")))
-            .lore(config.getStringList("lore"))
-            .maxDamage(config.getInt("maxDamage"))
-            .maxStackSize(config.getInt("maxStackSize", 1))
-            .jukeboxPlayableComponent(config.getString("jukeboxSong.name"), config.getBoolean("jukeboxSong.showInTooltip", true))
-            .enchantmentGlintOverride(config.getBoolean("enchantmentGlintOverride.set"), config.getBoolean("enchantmentGlintOverride.value"))
-            .build();
+        // CustomItem item = objectMapper.readValue(config, CustomItem.class);
+        CustomItem item = ItemCreator.getGson().fromJson(config, CustomItem.class);
+        item.key(key);
+        return item;
+    }
+
+    // public static CustomItem readItem(YamlConfiguration config, String folderName, String fileName) {
+    //     Key key = Key.key(folderName, fileName);
+    //     Log.log("Reading item %s", key.asString());
+
+    //     return CustomItem.Builder.builder(key)
+    //         .customModelData(config.getInt("model"))
+    //         .itemName(config.getString("name", ""))
+    //         .material(Material.matchMaterial(config.getString("material", "diamond_pickaxe")))
+    //         .lore(config.getStringList("lore"))
+    //         .maxDamage(config.getInt("maxDamage"))
+    //         .maxStackSize(config.getInt("maxStackSize", 1))
+    //         .jukeboxPlayableComponent(config.getString("jukeboxSong.name"), config.getBoolean("jukeboxSong.showInTooltip", true))
+    //         .enchantmentGlintOverride(config.getBoolean("enchantmentGlintOverride.set"), config.getBoolean("enchantmentGlintOverride.value"))
+    //         .build();
+    // }
+
+    private static String readFile(File file) throws IOException {
+        return FileUtils.readFileToString(file, Charset.defaultCharset());
     }
 }

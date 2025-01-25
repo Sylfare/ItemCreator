@@ -40,6 +40,10 @@ public class CustomItem {
         return this.key;
     }
 
+    public void key(Key key) {
+        this.key = key;
+    }
+
     public int customModelData() {
         return customModelData;
     }
@@ -95,13 +99,13 @@ public class CustomItem {
         return item;
     }
 
+    public static Builder builder(Key key) {
+        return new Builder().key(key);
+    }
+
     public static class Builder {
         CustomItem item = new CustomItem();
         private MiniMessage mm = MiniMessage.miniMessage();
-
-        public static Builder builder(Key key) {
-            return new CustomItem.Builder().key(key);
-        }
         
         private Builder key(Key key) {
             item.key = key;
