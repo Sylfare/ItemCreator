@@ -2,13 +2,13 @@ package re.sylfa.itemcreator.items;
 
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Arrays;
+import java.util.Optional;
+
 import net.kyori.adventure.key.Key;
 import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.util.Log;
@@ -20,9 +20,8 @@ public class ItemRegistry {
         Arrays.stream(item).forEach(i -> itemList.put(i.key(), i));
     }
 
-    @Nullable
-    public CustomItem get(Key key) {
-        return itemList.getOrDefault(key, null);
+    public Optional<CustomItem> get(Key key) {
+        return Optional.ofNullable(itemList.getOrDefault(key, null));
     }
 
     public boolean has(Key key) {
@@ -46,16 +45,19 @@ public class ItemRegistry {
 
         if(key.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
             Material material = Material.matchMaterial(key.value());
-            if (material != null) return new ItemStack(material);
+            if (material != null) {
+                return new ItemStack(material);
+            }
         }
 
         // it was not a Minecraft item, check if it's a custom one
         var itemRegistry = ItemCreator.getItemRegistry();
-        if(itemRegistry.has(key)) {
-            return itemRegistry.get(key).asItemStack();
-        };
-
-        Log.warn("Material not found: %s", key.asString());
-        return null;
+        Optional<CustomItem> item = itemRegistry.get(key);
+        if(item.isPresent()) {
+            return item.get().getItem();
+        } else {
+            Log.warn("Material not found: %s", key.asString());
+            return null;
+        }
     }
 }

@@ -49,7 +49,7 @@ public class ItemCreatorCommand implements Command{
             @SuppressWarnings("unchecked")
             Optional<CustomItem> item = ctx.getArgument("itemKey", Optional.class);
             if(item.isPresent()) {
-                player.getInventory().addItem(item.get().asItemStack());
+                player.getInventory().addItem(item.get().getItem());
             } else {
                 player.sendMessage(Component.text("Error: not a valid custom item.", NamedTextColor.RED));
             }

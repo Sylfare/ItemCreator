@@ -1,23 +1,24 @@
 package re.sylfa.itemcreator.items;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.kyori.adventure.key.Key;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.bukkit.inventory.ItemStack;
+import re.sylfa.itemcreator.ItemCreator;
+import re.sylfa.itemcreator.util.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-
-import com.mojang.authlib.minecraft.client.ObjectMapper;
-
-import net.kyori.adventure.key.Key;
-import re.sylfa.itemcreator.ItemCreator;
-import re.sylfa.itemcreator.util.Log;
+import java.util.Objects;
 
 public class ItemReader {
-    
-    public static final ObjectMapper objectMapper = ObjectMapper.create();
+
+    static final ObjectMapper mapper = ItemCreator.getMapper();
 
     public static List<CustomItem> readAllItems() {
         File itemsFolder = new File(ItemCreator.getInstance().getDataFolder(), "items");
@@ -36,9 +37,9 @@ public class ItemReader {
                 return true;
             }
         })
-        .map(folder -> {
+        .flatMap(folder -> {
             String folderName = folder.getName();
-            return Arrays.stream(folder.listFiles())
+            return Arrays.stream(Objects.requireNonNull(folder.listFiles()))
             .filter(file -> {
                 if(!"json".equals(FilenameUtils.getExtension(file.getPath()))) {
                     Log.warn("%s is not an item file in %s", file.getName(), folderName);
@@ -48,9 +49,8 @@ public class ItemReader {
                 }
             })
             .map(ItemReader::readItem)
-            .filter(file -> file != null);
+            .filter(Objects::nonNull);
         })
-        .flatMap(a -> a)
         .toList();     
     }
 
@@ -58,27 +58,56 @@ public class ItemReader {
         String fileName = FilenameUtils.getBaseName(file.getPath());
         String parentName = file.getParentFile().getName();
 
-        if(parentName == "items") {
+        if("items".equals(parentName)) {
             Log.warn("%s item is not in a namespace", file.getName());
             return null;
         }
 
-        try {
-            return readItemJson(readFile(file), parentName, fileName);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(!Key.parseableNamespace(parentName)) {
+            Log.error("%s namespace should only have characters from [a-z0-9_\\-.]");
             return null;
         }
+        if(!Key.parseableValue(fileName)) {
+            Log.error("%s is not a valid item name", fileName);
+        }
+
+        Key key = Key.key(parentName, fileName);
+//        try {
+        try {
+            ItemStack item = mapper.readValue(file, ItemStack.class);
+
+
+            return CustomItem.builder(key)
+                    .item(item)
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+//            return readItemJson(readFile(file), parentName, fileName);
+//            return null;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
     }
 
     public static CustomItem readItemJson(String config, String folderName, String fileName) {
+
+
         Key key = Key.key(folderName, fileName);
         Log.log("Reading item %s", key.asString());
 
-        // CustomItem item = objectMapper.readValue(config, CustomItem.class);
-        CustomItem item = ItemCreator.getGson().fromJson(config, CustomItem.class);
-        item.key(key);
-        return item;
+        try {
+            CustomItem item = mapper.readValue(config, CustomItem.class);
+            Log.log(item.toString());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+//        CustomItem item = ItemCreator.getGson().fromJson(config, CustomItem.class);
+//        item.key(key);
+//        return item;
+        return null;
     }
 
     // public static CustomItem readItem(YamlConfiguration config, String folderName, String fileName) {

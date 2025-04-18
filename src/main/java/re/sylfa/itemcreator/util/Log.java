@@ -1,27 +1,32 @@
 package re.sylfa.itemcreator.util;
 
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Log {
-    private static String PREFIX = "[ItemCreator] ";
+public interface Log {
+    String PREFIX = "[ItemCreator] ";
 
-    public static void log(Component message){
+    static void log(Component message){
         Bukkit.getConsoleSender().sendMessage(Component.text(PREFIX).append(message));
     }
 
-    public static void log(String message, Object... args){
+    static void log(String message, Object... args){
         Log.log(Component.text(String.format(message, args)));
     }
 
 
-    public static void warn(String message, Object... args){
+    static void warn(String message, Object... args){
         Log.warn(Component.text(String.format(message, args)));
     }
 
-    public static void warn(Component message){
+    static void warn(Component message){
         log(message.color(NamedTextColor.RED));
     }
+
+    static void error(Component message) { log(message.color(NamedTextColor.DARK_RED).decorate(TextDecoration.BOLD));}
+
+    static void error(String message, Object... args) { Log.error(Component.text(String.format(message, args)));}
 }
