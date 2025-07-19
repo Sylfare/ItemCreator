@@ -1,6 +1,5 @@
 package re.sylfa.itemcreator.deserializers;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -11,7 +10,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class TextComponentDeserializer extends StdDeserializer<Component> {
-    MiniMessage miniMessage = MiniMessage.miniMessage();
+    private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public TextComponentDeserializer() {
         super(Component.class);

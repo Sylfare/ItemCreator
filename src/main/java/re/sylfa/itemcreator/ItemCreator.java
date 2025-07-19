@@ -24,6 +24,7 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import re.sylfa.itemcreator.commands.ItemCreatorCommand;
+import re.sylfa.itemcreator.deserializers.NamespacedKeyDeserializer;
 import re.sylfa.itemcreator.items.CustomItem;
 import re.sylfa.itemcreator.items.ItemReader;
 import re.sylfa.itemcreator.items.ItemRegistry;
@@ -100,7 +101,8 @@ public class ItemCreator extends JavaPlugin {
         SimpleModule module = new SimpleModule();
         module.addDeserializer(ItemStack.class, new ItemDeserializer())
             .addDeserializer(Material.class, new MaterialDeserializer())
-            .addDeserializer(Component.class, new TextComponentDeserializer());
+            .addDeserializer(Component.class, new TextComponentDeserializer())
+            .addDeserializer(NamespacedKey.class, new NamespacedKeyDeserializer());
 
         mapper.registerModule(module);
 

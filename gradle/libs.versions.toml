@@ -8,7 +8,7 @@ runPaper = "2.3.1"
 lombok = "1.18.38"
 adventure = "4.20.0"
 commonsIo = "2.19.0"
-jackson = "2.19.0-rc2"
+jackson = "2.19.2"
 
 [libraries]
 brigadier = {group = "com.mojang", name = "brigadier", version.ref = "brigadier"}

@@ -11,8 +11,6 @@ import org.bukkit.inventory.ItemStack;
 
 @Getter
 public class CustomItem {
-    private static final String ID = "id";
-
     private Key key;
     private ItemStack item;
 
@@ -24,51 +22,7 @@ public class CustomItem {
         this.key = key;
     }
 
-    // public int customModelData() {
-    //     return customModelData;
-    // }
-
-//    public List<Component> lore() {
-//        return lore;
-//    }
-//
-//    public int maxDamage() {
-//        return maxDamage;
-//    }
-//
-//    public int maxStackSize() {
-//        return maxStackSize;
-//    }
-//
-//    public JukeboxPlayableComponent jukeboxPlayableComponent() {
-//        return jukeboxPlayableComponent;
-//    }
-
     public ItemStack asItemStack() {
-//        var itemNms = CraftItemStack.asNMSCopy(new ItemStack(material));
-//        // setMaxDamage(null) only resets the *patched* value, not the actual one
-//        itemNms.remove(DataComponents.MAX_DAMAGE);
-//        itemNms.remove(DataComponents.TOOL);
-//        itemNms.remove(DataComponents.ATTRIBUTE_MODIFIERS);
-//        itemNms.remove(DataComponents.FOOD);
-//
-//        ItemStack item = itemNms.asBukkitCopy();
-//        item.editMeta(Damageable.class, meta -> {
-//            meta.getPersistentDataContainer().set(NamespacedKey.fromString(ID, ItemCreator.getInstance()), PersistentDataType.STRING, key.asString());
-//            meta.itemName(itemName);
-//            // meta.setCustomModelData(this.hasCustomModelData ? customModelData : null);
-//            meta.lore(lore);
-//            if(hasMaxDamage) {
-//                meta.setMaxDamage(maxDamage);
-//            }
-//            meta.setMaxStackSize(maxStackSize);
-//            meta.setJukeboxPlayable(jukeboxPlayableComponent);
-//            if(hasEnchantmentGlintOverride) {
-//                meta.setEnchantmentGlintOverride(enchantmentGlintOverride);
-//            }
-//            meta.setEquippable(equippableComponent);
-//        });
-//
         return item;
     }
 
@@ -77,96 +31,16 @@ public class CustomItem {
     }
 
     public static class Builder {
-        CustomItem item = new CustomItem();
-        private MiniMessage mm = MiniMessage.miniMessage();
+        CustomItem customItem = new CustomItem();
         
         private Builder key(Key key) {
-            item.key = key;
+            customItem.key = key;
             return this;
         }
 
-        // Builder customModelData(int customModelData) {
-        //     if(customModelData != 0) {
-        //         item.customModelData = customModelData;
-        //         item.hasCustomModelData = true;
-        //     }
-        //     return this;
-        // }
-
-//        Builder itemName(String rawItemName) {
-//            return itemName(mm.deserialize(rawItemName));
-////        }
-//
-//        Builder itemName(Component itemName) {
-//            item.itemName = itemName;
-//            return this;
-//        }
-
-//        Builder material(Material material) {
-//            item.material = material;
-//            return this;
-//        }
-
-//        Builder lore(List<String> lore) {
-//            if(!lore.isEmpty()) {
-//                item.lore = lore.stream().map(line -> mm.deserialize("<!italic><grey>"+line+"</grey></!italic>")).toList();
-//            }
-//            return this;
-//        }
-//
-//        Builder maxDamage(int maxDamage) {
-//            if(maxDamage > 0) {
-//                item.maxDamage = maxDamage;
-//                item.hasMaxDamage = true;
-//            } else if (maxDamage < 0) {
-//                Log.warn("Negative max damage for %s", item.key.asString());
-//            }
-//
-//            return this;
-//        }
-//
-//        Builder maxStackSize(int maxStackSize) {
-//            if(maxStackSize < 1 || maxStackSize > 99) {
-//                maxStackSize = 1;
-//                Log.warn(String.format("Max stack size for %s is not valid", item.key.asString()));
-//            }
-//
-//            item.maxStackSize = maxStackSize;
-//            return this;
-//        }
-//
-//        Builder jukeboxPlayableComponent(String rawJukeboxSong, boolean showInTooltip) {
-//            if(rawJukeboxSong == null) {
-//                return this;
-//            }
-//            JukeboxSong jukeboxSong = RegistryAccess.registryAccess().getRegistry(RegistryKey.JUKEBOX_SONG).get(Key.key(rawJukeboxSong));
-//            if(jukeboxSong != null) {
-//                // HACK there's no JukeboxPlayableComponent constructor
-//                JukeboxPlayableComponent jukeboxPlayableComponent = new ItemStack(Material.STONE).getItemMeta().getJukeboxPlayable();
-//                jukeboxPlayableComponent.setSong(jukeboxSong);
-////                jukeboxPlayableComponent.setShowInTooltip(showInTooltip);
-//                return jukeboxPlayableComponent(jukeboxPlayableComponent);
-//            }
-//            return this;
-//        }
-        
-//        Builder jukeboxPlayableComponent(JukeboxPlayableComponent jukeboxPlayableComponent) {
-//            item.jukeboxPlayableComponent = jukeboxPlayableComponent;
-//            return this;
-//        }
-//
-//        Builder enchantmentGlintOverride(boolean set, boolean override) {
-//            item.hasEnchantmentGlintOverride = set;
-//            item.enchantmentGlintOverride = override;
-//            return this;
-//        }
-
-        CustomItem build() {
-            return this.customItem;
-        }
 
         public Builder item(ItemStack item) {
-            // add custom item ID into the customData component, to be used with resource packs
+            // add custom item ID into the customData component
             net.minecraft.world.item.ItemStack nmsCopy = CraftItemStack.asNMSCopy(item);
 
             CustomData customData = nmsCopy.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
@@ -175,6 +49,10 @@ public class CustomItem {
             nmsCopy.set(DataComponents.CUSTOM_DATA, customData);
             this.customItem.item = nmsCopy.asBukkitCopy();
             return this;
+        }
+
+        CustomItem build() {
+            return this.customItem;
         }
     }
 }
