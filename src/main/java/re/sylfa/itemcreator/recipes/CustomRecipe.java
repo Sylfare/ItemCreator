@@ -3,6 +3,7 @@ package re.sylfa.itemcreator.recipes;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.bukkit.Material;
@@ -20,6 +21,9 @@ import org.bukkit.inventory.SmokingRecipe;
 import org.bukkit.inventory.StonecuttingRecipe;
 
 import net.kyori.adventure.key.Key;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.common.value.qual.ArrayLenRange;
+import org.jetbrains.annotations.NotNull;
 import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.items.ItemRegistry;
 import re.sylfa.itemcreator.util.Log;
@@ -54,23 +58,23 @@ public class CustomRecipe {
                     Log.warn("Shape for %s is not set", keyValue);
                     return null;
                 }
-                if(shapedIngredients == null || shapedIngredients.entrySet().size() == 0) {
+                if(shapedIngredients == null || shapedIngredients.isEmpty()) {
                     Log.warn("Recipe %s has no ingredients.", keyValue);
                     return null;
                 }
                 ShapedRecipe shapedRecipe = new ShapedRecipe(key(), result);
 
                 shapedRecipe.shape(shape);
-                shapedIngredients.forEach((ingredientKey, ingredient) -> shapedRecipe.setIngredient(ingredientKey, ingredient));
+                shapedIngredients.forEach(shapedRecipe::setIngredient);
                 return shapedRecipe;
 
             case SHAPELESS:
-                if(ingredients == null || ingredients.size() == 0) {
+                if(ingredients == null || ingredients.isEmpty()) {
                     Log.warn("Recipe %s has no ingredients.", keyValue);
                     return null;
                 }
                 ShapelessRecipe shapelessRecipe = new ShapelessRecipe(key(), result);
-                ingredients.forEach(ingredient -> shapelessRecipe.addIngredient(ingredient));
+                ingredients.forEach(shapelessRecipe::addIngredient);
                 return shapelessRecipe;
         
             case STONECUTTING:
@@ -131,7 +135,7 @@ public class CustomRecipe {
 
     public static class Builder {
         CustomRecipe recipe = new CustomRecipe();
-        private ItemRegistry itemRegistry = ItemCreator.getItemRegistry();
+        private final ItemRegistry itemRegistry = ItemCreator.getItemRegistry();
 
         public static Builder builder(String keyValue, String type) {
             return new Builder().keyValue(keyValue).type(type);
@@ -143,24 +147,19 @@ public class CustomRecipe {
         }
 
         private Builder type(String rawType) {
-            RecipeType type = RecipeType.valueOf(rawType.toUpperCase());
-            if(type != null) {
-                recipe.type = type;
-            } else {
-                Log.warn("Unknown recipe type for %s: %s", recipe.keyValue, rawType);
-            }
+            recipe.type = RecipeType.valueOf(rawType.toUpperCase());
 
             return this;
         }
 
         Builder shapedIngredients(Map<Character, String> shapedIngredients) {
-            if(shapedIngredients == null || shapedIngredients.entrySet().size() == 0) {
+            if(shapedIngredients == null || shapedIngredients.isEmpty()) {
                 return this;
             }
 
             Map<Character, ItemStack> parsedIngredients = shapedIngredients.entrySet().stream()
                 .collect(Collectors.toMap(
-                    entry -> entry.getKey(),
+                    Map.Entry::getKey,
                     entry -> itemRegistry.parse(Key.key(entry.getValue()))
                 ));
             var unknownIngredient = parsedIngredients.entrySet().stream()
@@ -184,19 +183,22 @@ public class CustomRecipe {
                 return this;
             }
             
-            List<ItemStack> parsedIngredients = ingredients.stream().map(ingredient -> ItemCreator.getItemRegistry().parse(Key.key(ingredient))).toList();
-            var unknownIngredient = ingredients.stream().filter(ingredient -> ingredient == null).findAny();
+            List<ItemStack> parsedIngredients = ingredients.stream()
+                .map(ingredient -> ItemCreator.getItemRegistry().parse(Key.key(ingredient))).toList();
+            var unknownIngredient = ingredients.stream().filter(Objects::isNull).findAny();
             if(unknownIngredient.isPresent()) {
                 Log.warn("Unknown ingredient found for recipe %s", recipe.keyValue);
             }
+
             // HACK why .toList() is not working here??
-            List<RecipeChoice> recipeChoices = parsedIngredients.stream().map(RecipeChoice.ExactChoice::new).collect(Collectors.toList());
-            recipe.ingredients = recipeChoices;
+            recipe.ingredients = parsedIngredients.stream()
+                .map(RecipeChoice.ExactChoice::new)
+                .collect(Collectors.toList());
             return this;
         }
 
-        Builder ingredient(String ingredient) {
-            if(ingredient == null || ingredient.isBlank()) {
+        Builder ingredient(@NonNull String ingredient) {
+            if(ingredient.isBlank()) {
                 return this;
             }
 
@@ -225,7 +227,7 @@ public class CustomRecipe {
             return this;
         }
 
-        Builder shape(String[] shape) {
+        Builder shape(@ArrayLenRange(to = 3) String[] shape) {
             if(shape.length > 3) {
                 Log.warn("Shape for %s has too many lines", recipe.keyValue);
                 return this;
@@ -255,10 +257,10 @@ public class CustomRecipe {
             return this;
         }
 
-        Builder smithing(String rawBase, String rawAddition, String rawTemplate) {
-            if(rawBase == null && rawAddition == null && rawTemplate == null) {
-                return this;
-            }
+        Builder smithing(@NotNull String rawBase,
+                         @NonNull String rawAddition,
+                         @NotNull String rawTemplate) {
+
 
             ItemStack base = itemRegistry.parse(Key.key(rawBase));
             if(base == null) {

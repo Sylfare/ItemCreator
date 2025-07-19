@@ -1,6 +1,5 @@
-package re.sylfa.itemcreator.items.deserializers;
+package re.sylfa.itemcreator.deserializers;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -15,7 +14,7 @@ public class MaterialDeserializer extends StdDeserializer<Material> {
     }
 
     @Override
-    public Material deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+    public Material deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         return Optional.ofNullable(p.getValueAsString())
             .map(Material::matchMaterial)
             .orElse(Material.STONE);

@@ -1,4 +1,4 @@
-package re.sylfa.itemcreator.items.deserializers;
+package re.sylfa.itemcreator.deserializers;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -10,10 +10,10 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import java.io.IOException;
 import java.util.Optional;
 
-public class ComponentDeserializer extends StdDeserializer<Component> {
+public class TextComponentDeserializer extends StdDeserializer<Component> {
     MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    public ComponentDeserializer() {
+    public TextComponentDeserializer() {
         super(Component.class);
     }
 

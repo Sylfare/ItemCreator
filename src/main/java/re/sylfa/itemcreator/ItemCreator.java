@@ -12,38 +12,36 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.meta.components.EquippableComponent;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.permissions.CommandPermissions;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import re.sylfa.itemcreator.commands.ItemCreatorCommand;
 import re.sylfa.itemcreator.items.CustomItem;
 import re.sylfa.itemcreator.items.ItemReader;
 import re.sylfa.itemcreator.items.ItemRegistry;
-import re.sylfa.itemcreator.items.deserializers.ComponentDeserializer;
-import re.sylfa.itemcreator.items.deserializers.ItemDeserializer;
-import re.sylfa.itemcreator.items.deserializers.MaterialDeserializer;
+import re.sylfa.itemcreator.deserializers.TextComponentDeserializer;
+import re.sylfa.itemcreator.deserializers.ItemDeserializer;
+import re.sylfa.itemcreator.deserializers.MaterialDeserializer;
 import re.sylfa.itemcreator.recipes.CustomRecipe;
 import re.sylfa.itemcreator.recipes.RecipeReader;
 import re.sylfa.itemcreator.recipes.RecipeRegistry;
 import re.sylfa.itemcreator.util.Log;
 
 public class ItemCreator extends JavaPlugin {
-    
+
+    @Getter
     private static ItemCreator instance;
-    private static ItemRegistry itemRegistry = new ItemRegistry();
-    private static RecipeRegistry recipeRegistry = new RecipeRegistry();
+    @Getter
+    private static final ItemRegistry itemRegistry = new ItemRegistry();
+    @Getter
+    private static final RecipeRegistry recipeRegistry = new RecipeRegistry();
 
     @Getter
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -58,18 +56,6 @@ public class ItemCreator extends JavaPlugin {
         init();
         registerPermissions();
         registerCommands();
-    }
-
-    public static ItemCreator getInstance() {
-        return instance;
-    }
-
-    public static ItemRegistry getItemRegistry() {
-        return itemRegistry;
-    }
-
-    public static RecipeRegistry getRecipeRegistry() {
-        return recipeRegistry;
     }
 
 
@@ -109,7 +95,7 @@ public class ItemCreator extends JavaPlugin {
         SimpleModule module = new SimpleModule();
         module.addDeserializer(ItemStack.class, new ItemDeserializer())
             .addDeserializer(Material.class, new MaterialDeserializer())
-            .addDeserializer(Component.class, new ComponentDeserializer());
+            .addDeserializer(Component.class, new TextComponentDeserializer());
 
         mapper.registerModule(module);
 
