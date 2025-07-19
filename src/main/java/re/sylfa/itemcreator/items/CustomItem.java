@@ -3,6 +3,10 @@ package re.sylfa.itemcreator.items;
 import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.world.item.component.CustomData;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 @Getter
@@ -158,11 +162,18 @@ public class CustomItem {
 //        }
 
         CustomItem build() {
-            return item;
+            return this.customItem;
         }
 
         public Builder item(ItemStack item) {
-            this.item.item = item;
+            // add custom item ID into the customData component, to be used with resource packs
+            net.minecraft.world.item.ItemStack nmsCopy = CraftItemStack.asNMSCopy(item);
+
+            CustomData customData = nmsCopy.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
+                .update(compoundTag -> compoundTag.put("itemcreator:id", StringTag.valueOf(this.customItem.key.asString())));
+
+            nmsCopy.set(DataComponents.CUSTOM_DATA, customData);
+            this.customItem.item = nmsCopy.asBukkitCopy();
             return this;
         }
     }
