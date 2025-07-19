@@ -22,6 +22,7 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import re.sylfa.itemcreator.commands.ItemCreatorCommand;
 import re.sylfa.itemcreator.items.CustomItem;
 import re.sylfa.itemcreator.items.ItemReader;
@@ -65,7 +66,11 @@ public class ItemCreator extends JavaPlugin {
         
 
         List<CustomRecipe> readRecipes = RecipeReader.readAllRecipes();
-        Map<NamespacedKey, Recipe> readRecipesMap = readRecipes.stream().collect(Collectors.toMap(r -> r.key(), r -> r.asRecipe()));
+        Map<NamespacedKey, Recipe> readRecipesMap = readRecipes.stream()
+            .collect(Collectors.toMap(
+                CustomRecipe::key,
+                CustomRecipe::asRecipe
+            ));
         recipeRegistry.getAll().keySet().forEach(key -> Log.log("Removing %s: %b", key.asString(), Bukkit.removeRecipe(key)));
         recipeRegistry.removeAll();
 
@@ -82,7 +87,7 @@ public class ItemCreator extends JavaPlugin {
     }
 
     private void registerCommands() {
-        LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
+        LifecycleEventManager<@NonNull Plugin> manager = this.getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             final Commands commands = event.registrar();
             List.of(

@@ -18,7 +18,7 @@ public class TextComponentDeserializer extends StdDeserializer<Component> {
     }
 
     @Override
-    public Component deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+    public Component deserialize(JsonParser p, DeserializationContext ctxt) throws IOException{
 
         return Optional.ofNullable(p.getValueAsString())
             .map(message -> miniMessage.deserialize("<!italic><white>"+message+"</white></!italic>"))
