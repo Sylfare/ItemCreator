@@ -2,7 +2,6 @@ package re.sylfa.itemcreator.items;
 
 import lombok.Getter;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.world.item.component.CustomData;

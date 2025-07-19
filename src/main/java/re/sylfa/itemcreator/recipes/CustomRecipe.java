@@ -1,32 +1,20 @@
 package re.sylfa.itemcreator.recipes;
 
+import net.kyori.adventure.key.Key;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.*;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.common.value.qual.ArrayLenRange;
+import re.sylfa.itemcreator.ItemCreator;
+import re.sylfa.itemcreator.items.ItemRegistry;
+import re.sylfa.itemcreator.util.Log;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.BlastingRecipe;
-import org.bukkit.inventory.CampfireRecipe;
-import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
-import org.bukkit.inventory.SmithingTransformRecipe;
-import org.bukkit.inventory.SmokingRecipe;
-import org.bukkit.inventory.StonecuttingRecipe;
-
-import net.kyori.adventure.key.Key;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.common.value.qual.ArrayLenRange;
-import org.jetbrains.annotations.NotNull;
-import re.sylfa.itemcreator.ItemCreator;
-import re.sylfa.itemcreator.items.ItemRegistry;
-import re.sylfa.itemcreator.util.Log;
 
 public class CustomRecipe {
     String keyValue;
@@ -79,21 +67,21 @@ public class CustomRecipe {
         
             case STONECUTTING:
                 if(ingredient == null) {
-                    Log.warn("Recipe %s has no ingredients.", keyValue);
+                    Log.warn("Recipe %s has no ingredient.", keyValue);
                     return null;
                 }
                 return new StonecuttingRecipe(key(), result, ingredient);
 
             case FURNACE:
                 if(ingredient == null) {
-                    Log.warn("Recipe %s has no ingredients.", keyValue);
+                    Log.warn("Recipe %s has no ingredient.", keyValue);
                     return null;
                 }
                 return new FurnaceRecipe(key(), result, ingredient, cookingExperience, cookingTime);
 
             case CAMPFIRE:
                 if(ingredient == null) {
-                    Log.warn("Recipe %s has no ingredients.", keyValue);
+                    Log.warn("Recipe %s has no ingredient.", keyValue);
                     return null;
                 }
                 return new CampfireRecipe(key(), result, ingredient, cookingExperience, cookingTime);
@@ -178,7 +166,7 @@ public class CustomRecipe {
         }
 
         Builder ingredients(List<String> ingredients) {
-            if(ingredients.size() > 9) {
+            if(ingredients == null || ingredients.size() > 9) {
                 Log.warn("Too many ingredients for recipe %s", recipe.keyValue);
                 return this;
             }
@@ -197,8 +185,8 @@ public class CustomRecipe {
             return this;
         }
 
-        Builder ingredient(@NonNull String ingredient) {
-            if(ingredient.isBlank()) {
+        Builder ingredient(@Nullable String ingredient) {
+            if(ingredient == null || ingredient.isBlank()) {
                 return this;
             }
 
@@ -213,6 +201,9 @@ public class CustomRecipe {
         }
 
         Builder result(String result, int amount) {
+            if(result == null || result.isBlank()) {
+                return this;
+            }
             if(amount < 1 || amount > 99) {
                 Log.warn("Bad result amount for %s: %d", recipe.keyValue, amount);
                 return this;
@@ -228,6 +219,10 @@ public class CustomRecipe {
         }
 
         Builder shape(@ArrayLenRange(to = 3) String[] shape) {
+            if(shape == null) {
+                return this;
+            }
+
             if(shape.length > 3) {
                 Log.warn("Shape for %s has too many lines", recipe.keyValue);
                 return this;
@@ -244,6 +239,9 @@ public class CustomRecipe {
         }
 
         Builder cooking(float experience, int cookingTime) {
+            if(experience == 0 && cookingTime == 0) {
+                return this;
+            }
             if(experience < 0) {
                 Log.warn("Furnace experience is negative in recipe %s", recipe.keyValue);
                 return this;
@@ -257,10 +255,13 @@ public class CustomRecipe {
             return this;
         }
 
-        Builder smithing(@NotNull String rawBase,
-                         @NonNull String rawAddition,
-                         @NotNull String rawTemplate) {
+        Builder smithing(String rawBase,
+                         String rawAddition,
+                         String rawTemplate) {
 
+            if(rawBase == null && rawAddition == null && rawTemplate == null) {
+                return this;
+            }
 
             ItemStack base = itemRegistry.parse(Key.key(rawBase));
             if(base == null) {

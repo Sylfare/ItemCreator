@@ -37,7 +37,7 @@ public class ItemReader {
             })
             .flatMap(folder -> {
                 String folderName = folder.getName();
-                return Arrays.stream(Objects.requireNonNull(folder.listFiles()))
+                return JavaUtils.arrayStream(Objects.requireNonNull(folder.listFiles()))
                 .filter(file -> {
                     if(!"json".equals(FilenameUtils.getExtension(file.getPath()))) {
                         Log.warn("%s is not an item file in %s", file.getName(), folderName);

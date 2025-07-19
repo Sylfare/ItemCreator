@@ -1,16 +1,16 @@
 package re.sylfa.itemcreator.recipes;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
-
 import re.sylfa.itemcreator.ItemCreator;
+import re.sylfa.itemcreator.util.JavaUtils;
 import re.sylfa.itemcreator.util.Log;
+
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class RecipeReader {
 
@@ -22,16 +22,31 @@ public class RecipeReader {
             return List.of();
         }
 
-        return Arrays.stream(recipesFolder.listFiles())
-        .map(file -> {
-            if(!List.of("yml","yaml").contains(FilenameUtils.getExtension(file.getPath()))) {
-                Log.warn("%s is not an recipe file", file.getName());
-                return null;
+        return JavaUtils.arrayStream(recipesFolder.listFiles())
+        .filter(file -> {
+            if(!file.isDirectory()) {
+                Log.warn("%s is not a recipe namespace", file.getName());
+                return false;
             } else {
-                return RecipeReader.readRecipe(file);
+                return true;
             }
         })
-        .filter(file -> file != null)
+            .flatMap(folder -> {
+                String folderName = folder.getName();
+                return JavaUtils.arrayStream(folder.listFiles())
+                    .filter(file -> {
+//                        if(!List.of("yml","yaml").contains(FilenameUtils.getExtension(file.getPath()))) {
+                        if(!"json".equals(FilenameUtils.getExtension(file.getPath()))) {
+                            Log.warn("%s is not an item file in %s", file.getName(), folderName);
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    })
+                    .map(RecipeReader::readRecipe);
+            })
+
+        .filter(Objects::nonNull)
         .toList();     
     }
 
