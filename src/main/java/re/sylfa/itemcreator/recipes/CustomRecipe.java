@@ -259,7 +259,7 @@ public class CustomRecipe {
                          String rawAddition,
                          String rawTemplate) {
 
-            if(rawBase == null && rawAddition == null && rawTemplate == null) {
+            if(rawBase == null || rawAddition == null || rawTemplate == null) {
                 return this;
             }
 

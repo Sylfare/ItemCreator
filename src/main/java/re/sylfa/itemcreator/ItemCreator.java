@@ -1,40 +1,41 @@
 package re.sylfa.itemcreator;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.meta.components.EquippableComponent;
+import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.permissions.CommandPermissions;
-
-import io.papermc.paper.command.brigadier.Commands;
-import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
-import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import re.sylfa.itemcreator.commands.ItemCreatorCommand;
-import re.sylfa.itemcreator.deserializers.NamespacedKeyDeserializer;
+import re.sylfa.itemcreator.deserializers.components.EquippableDeserializer;
+import re.sylfa.itemcreator.deserializers.components.ToolDeserializer;
+import re.sylfa.itemcreator.deserializers.types.*;
 import re.sylfa.itemcreator.items.CustomItem;
 import re.sylfa.itemcreator.items.ItemReader;
 import re.sylfa.itemcreator.items.ItemRegistry;
-import re.sylfa.itemcreator.deserializers.TextComponentDeserializer;
-import re.sylfa.itemcreator.deserializers.ItemDeserializer;
-import re.sylfa.itemcreator.deserializers.MaterialDeserializer;
 import re.sylfa.itemcreator.recipes.CustomRecipe;
 import re.sylfa.itemcreator.recipes.RecipeReader;
 import re.sylfa.itemcreator.recipes.RecipeRegistry;
 import re.sylfa.itemcreator.util.Log;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ItemCreator extends JavaPlugin {
 
@@ -102,7 +103,10 @@ public class ItemCreator extends JavaPlugin {
         module.addDeserializer(ItemStack.class, new ItemDeserializer())
             .addDeserializer(Material.class, new MaterialDeserializer())
             .addDeserializer(Component.class, new TextComponentDeserializer())
-            .addDeserializer(NamespacedKey.class, new NamespacedKeyDeserializer());
+            .addDeserializer(NamespacedKey.class, new NamespacedKeyDeserializer())
+            .addDeserializer(EquippableComponent.class, new EquippableDeserializer())
+            .addDeserializer(Key.class, new KeyDeserializer())
+            .addDeserializer(ToolComponent.class, new ToolDeserializer());
 
         mapper.registerModule(module);
 

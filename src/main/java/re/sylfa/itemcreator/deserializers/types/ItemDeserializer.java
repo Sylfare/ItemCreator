@@ -1,4 +1,4 @@
-package re.sylfa.itemcreator.deserializers;
+package re.sylfa.itemcreator.deserializers.types;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -8,7 +8,10 @@ import net.minecraft.core.component.DataComponents;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.EquippableComponent;
+import org.bukkit.inventory.meta.components.ToolComponent;
 import re.sylfa.itemcreator.util.Parsers;
 
 import java.io.IOException;
@@ -23,7 +26,7 @@ public class ItemDeserializer extends StdDeserializer<ItemStack> {
     @Override
     public ItemStack deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         JsonNode node = jsonParser.readValueAsTree();
-        Material material = Parsers.parseMaterial(node, "material")
+        Material material = Parsers.getMaterialValue(node, "material")
             .orElse(Material.WOODEN_PICKAXE);
 
         var itemNms = CraftItemStack.asNMSCopy(new ItemStack(material));
@@ -31,6 +34,7 @@ public class ItemDeserializer extends StdDeserializer<ItemStack> {
         // setMaxDamage(null) only resets the *patched* value, not the actual one
         itemNms.remove(DataComponents.MAX_DAMAGE);
         itemNms.remove(DataComponents.TOOL);
+        itemNms.remove(DataComponents.WEAPON);
         itemNms.remove(DataComponents.ATTRIBUTE_MODIFIERS);
         itemNms.remove(DataComponents.FOOD);
         itemNms.remove(DataComponents.REPAIRABLE);
@@ -41,7 +45,9 @@ public class ItemDeserializer extends StdDeserializer<ItemStack> {
         parseLore(node, item);
         parseMaxStackSize(node, item);
         parseItemModel(node, item);
-
+        parseEquippable(node, item);
+        parseMaxDamage(node, item);
+        parseTool(node, item);
         return item;
     }
 
@@ -64,5 +70,21 @@ public class ItemDeserializer extends StdDeserializer<ItemStack> {
     void parseItemModel(JsonNode node, ItemStack item) {
         Parsers.getNodeNamespacedKeyValue(node, "itemModel")
             .ifPresent(modelKey -> item.editMeta(itemMeta -> itemMeta.setItemModel(modelKey)));
+    }
+
+    void parseEquippable(JsonNode node, ItemStack item) {
+        Parsers.getNodeValue(node, "equippable", JsonNode::isObject, EquippableComponent.class)
+            .ifPresent(equippable -> item.editMeta(itemMeta -> itemMeta.setEquippable(equippable)));
+    }
+
+    void parseMaxDamage(JsonNode node, ItemStack item) {
+        Parsers.getNodeIntValue(node, "maxDamage")
+            .ifPresent(maxDamage -> item.editMeta(Damageable.class, itemMeta -> {
+                itemMeta.setMaxDamage(maxDamage);
+            }));
+    }
+
+    void parseTool(JsonNode node, ItemStack item) {
+        Parsers.getNodeValue(node, "tool", JsonNode::isObject, ToolComponent.class);
     }
 }

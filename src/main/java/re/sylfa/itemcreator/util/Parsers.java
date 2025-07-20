@@ -1,6 +1,7 @@
 package re.sylfa.itemcreator.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -21,7 +22,15 @@ public interface Parsers {
             : Optional.empty();
     }
 
-    static Optional<Material> parseMaterial(JsonNode node, String valueName) {
+    static Optional<String> getStringNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
+        return getNodeValue(node, valueName, JsonNode::isTextual, String.class);
+    }
+
+    static Optional<Boolean> getBooleanNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
+        return getNodeValue(node, valueName, JsonNode::isBoolean, Boolean.class);
+    }
+
+    static Optional<Material> getMaterialValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, JsonNode::isTextual, Material.class);
     }
 
@@ -48,5 +57,9 @@ public interface Parsers {
 
     static Optional<NamespacedKey> getNodeNamespacedKeyValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, JsonNode::isTextual, NamespacedKey.class);
+    }
+
+    static Optional<Key> getNodeKeyValue(@NonNull JsonNode node, @NonNull String valueName) {
+        return getNodeValue(node, valueName, JsonNode::isTextual, Key.class);
     }
 }

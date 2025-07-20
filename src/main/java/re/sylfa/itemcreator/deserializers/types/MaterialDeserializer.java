@@ -1,4 +1,4 @@
-package re.sylfa.itemcreator.deserializers;
+package re.sylfa.itemcreator.deserializers.types;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

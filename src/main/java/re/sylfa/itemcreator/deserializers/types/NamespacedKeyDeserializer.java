@@ -1,4 +1,4 @@
-package re.sylfa.itemcreator.deserializers;
+package re.sylfa.itemcreator.deserializers.types;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -15,7 +15,6 @@ public class NamespacedKeyDeserializer extends StdDeserializer<NamespacedKey> {
 
     @Override
     public @Nullable NamespacedKey deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        String parsedString = p.getValueAsString();
-        return NamespacedKey.fromString(parsedString);
+        return NamespacedKey.fromString(p.getValueAsString());
     }
 }
