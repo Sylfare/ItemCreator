@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import re.sylfa.itemcreator.ItemCreator;
+import re.sylfa.itemcreator.deserializers.components.ToolRuleDeserializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,10 @@ public interface Parsers {
             : Optional.empty();
     }
 
+    static Optional<Float> getFloatNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
+        return getNodeValue(node, valueName, JsonNode::isNumber, Float.class);
+    }
+
     static Optional<String> getStringNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, JsonNode::isTextual, String.class);
     }
@@ -30,13 +35,15 @@ public interface Parsers {
         return getNodeValue(node, valueName, JsonNode::isBoolean, Boolean.class);
     }
 
-    static Optional<Material> getMaterialValue(@NonNull JsonNode node, @NonNull String valueName) {
+    static Optional<Material> getMaterialNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, JsonNode::isTextual, Material.class);
     }
 
     static Optional<Component[]> getComponentArrayNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
         JsonNode foundNode = node.get(valueName);
-        if(foundNode == null || !foundNode.isArray()) return Optional.empty();
+        if(foundNode == null || !foundNode.isArray()) {
+            return Optional.empty();
+        }
         List<Component> components = new ArrayList<>();
         for(JsonNode line : foundNode) {
 
@@ -45,6 +52,25 @@ public interface Parsers {
         return components.isEmpty()
             ? Optional.empty()
             : Optional.of(components.toArray(Component[]::new));
+    }
+
+    static Optional<List<ToolRuleDeserializer.RuleValues>> getToolRulesArrayNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
+        JsonNode foundNode = node.get(valueName);
+        if(foundNode == null || !foundNode.isArray()) {
+            return Optional.empty();
+        }
+
+        List<ToolRuleDeserializer.RuleValues> ruleValues = new ArrayList<>();
+        for(JsonNode rule : foundNode) {
+            if(!rule.isObject()) {
+                continue;
+            }
+            ToolRuleDeserializer.RuleValues ruleValue = ItemCreator.getMapper().convertValue(rule, ToolRuleDeserializer.RuleValues.class);
+            if(ruleValue != null) {
+                ruleValues.add(ruleValue);
+            }
+        }
+        return Optional.of(ruleValues);
     }
 
     static Optional<Integer> getNodeIntValue(@NonNull JsonNode node, @NonNull String valueName) {

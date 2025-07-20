@@ -24,6 +24,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import re.sylfa.itemcreator.commands.ItemCreatorCommand;
 import re.sylfa.itemcreator.deserializers.components.EquippableDeserializer;
 import re.sylfa.itemcreator.deserializers.components.ToolDeserializer;
+import re.sylfa.itemcreator.deserializers.components.ToolRuleDeserializer;
 import re.sylfa.itemcreator.deserializers.types.*;
 import re.sylfa.itemcreator.items.CustomItem;
 import re.sylfa.itemcreator.items.ItemReader;
@@ -106,7 +107,8 @@ public class ItemCreator extends JavaPlugin {
             .addDeserializer(NamespacedKey.class, new NamespacedKeyDeserializer())
             .addDeserializer(EquippableComponent.class, new EquippableDeserializer())
             .addDeserializer(Key.class, new KeyDeserializer())
-            .addDeserializer(ToolComponent.class, new ToolDeserializer());
+            .addDeserializer(ToolComponent.class, new ToolDeserializer())
+            .addDeserializer(ToolRuleDeserializer.RuleValues.class, new ToolRuleDeserializer());
 
         mapper.registerModule(module);
 

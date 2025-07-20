@@ -26,7 +26,7 @@ public class ItemDeserializer extends StdDeserializer<ItemStack> {
     @Override
     public ItemStack deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         JsonNode node = jsonParser.readValueAsTree();
-        Material material = Parsers.getMaterialValue(node, "material")
+        Material material = Parsers.getMaterialNodeValue(node, "material")
             .orElse(Material.WOODEN_PICKAXE);
 
         var itemNms = CraftItemStack.asNMSCopy(new ItemStack(material));
@@ -79,12 +79,11 @@ public class ItemDeserializer extends StdDeserializer<ItemStack> {
 
     void parseMaxDamage(JsonNode node, ItemStack item) {
         Parsers.getNodeIntValue(node, "maxDamage")
-            .ifPresent(maxDamage -> item.editMeta(Damageable.class, itemMeta -> {
-                itemMeta.setMaxDamage(maxDamage);
-            }));
+            .ifPresent(maxDamage -> item.editMeta(Damageable.class, itemMeta -> itemMeta.setMaxDamage(maxDamage)));
     }
 
     void parseTool(JsonNode node, ItemStack item) {
-        Parsers.getNodeValue(node, "tool", JsonNode::isObject, ToolComponent.class);
+        Parsers.getNodeValue(node, "tool", JsonNode::isObject, ToolComponent.class)
+            .ifPresent(tool -> item.editMeta(itemMeta -> itemMeta.setTool(tool)));
     }
 }
