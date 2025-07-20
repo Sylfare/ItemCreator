@@ -20,6 +20,9 @@ public class ToolDeserializer extends StdDeserializer<ToolComponent> {
     @Override
     public ToolComponent deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode node = p.readValueAsTree();
+        if(node == null) {
+            return null;
+        }
         ToolComponent toolComponent = new ItemStack(Material.STONE).getItemMeta().getTool();
         Parsers.getNodeIntValue(node, "damagePerBlock").ifPresent(toolComponent::setDamagePerBlock);
         Parsers.getFloatNodeValue(node, "defaultMiningSpeed").ifPresent(toolComponent::setDefaultMiningSpeed);

@@ -1,6 +1,8 @@
 package re.sylfa.itemcreator.items;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import net.kyori.adventure.key.Key;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.StringTag;
@@ -8,7 +10,7 @@ import net.minecraft.world.item.component.CustomData;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
-@Getter
+@Getter @AllArgsConstructor @NoArgsConstructor
 public class CustomItem {
     private Key key;
     private ItemStack item;
@@ -16,6 +18,12 @@ public class CustomItem {
     public Key key() {
         return this.key;
     }
+
+    public CustomItem(ItemStack item) {
+        this.item = item;
+    }
+
+    CustomItem withKey(Key key) { return CustomItem.builder(key).item(getItem()).build(); }
 
     public void key(Key key) {
         this.key = key;
@@ -46,11 +54,11 @@ public class CustomItem {
                 .update(compoundTag -> compoundTag.put("itemcreator:id", StringTag.valueOf(this.customItem.key.asString())));
 
             nmsCopy.set(DataComponents.CUSTOM_DATA, customData);
-            this.customItem.item = nmsCopy.asBukkitCopy();
+            this.customItem.item = nmsCopy.asBukkitCopy().asOne();
             return this;
         }
 
-        CustomItem build() {
+        public CustomItem build() {
             return this.customItem;
         }
     }

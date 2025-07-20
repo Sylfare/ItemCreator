@@ -3,14 +3,12 @@ package re.sylfa.itemcreator.items;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.kyori.adventure.key.Key;
 import org.apache.commons.io.FilenameUtils;
-import org.bukkit.inventory.ItemStack;
 import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.util.JavaUtils;
 import re.sylfa.itemcreator.util.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,11 +69,8 @@ public class ItemReader {
 
         Key key = Key.key(parentName, fileName);
         try {
-            ItemStack item = mapper.readValue(file, ItemStack.class);
-
-            return CustomItem.builder(key)
-                    .item(item)
-                    .build();
+            CustomItem customItem = mapper.readValue(file, CustomItem.class);
+            return customItem.withKey(key);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

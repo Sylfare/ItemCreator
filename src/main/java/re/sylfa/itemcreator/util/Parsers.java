@@ -5,6 +5,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.deserializers.components.ToolRuleDeserializer;
@@ -87,5 +88,9 @@ public interface Parsers {
 
     static Optional<Key> getNodeKeyValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, JsonNode::isTextual, Key.class);
+    }
+
+    static Optional<ItemStack> getNodeItemStackValue(@NonNull JsonNode node, @NonNull String valueName) {
+        return getNodeValue(node, valueName, jsonNode -> jsonNode.isTextual() || jsonNode.isObject(), ItemStack.class);
     }
 }

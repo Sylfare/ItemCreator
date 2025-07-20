@@ -23,6 +23,9 @@ public class EquippableDeserializer extends StdDeserializer<EquippableComponent>
     @Override
     public EquippableComponent deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode node = p.readValueAsTree();
+        if(node == null) {
+            return null;
+        }
         JsonNode slotNode = node.get("slot");
         EquipmentSlot slot;
         if(slotNode != null && slotNode.isTextual()) {

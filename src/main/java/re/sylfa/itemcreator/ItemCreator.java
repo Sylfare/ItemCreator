@@ -3,6 +3,7 @@ package re.sylfa.itemcreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.components.EquippableComponent;
+import org.bukkit.inventory.meta.components.FoodComponent;
 import org.bukkit.inventory.meta.components.JukeboxPlayableComponent;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.permissions.Permission;
@@ -23,10 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.permissions.CommandPermissions;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import re.sylfa.itemcreator.commands.ItemCreatorCommand;
-import re.sylfa.itemcreator.deserializers.components.EquippableDeserializer;
-import re.sylfa.itemcreator.deserializers.components.JukeboxPlayableDeserializer;
-import re.sylfa.itemcreator.deserializers.components.ToolDeserializer;
-import re.sylfa.itemcreator.deserializers.components.ToolRuleDeserializer;
+import re.sylfa.itemcreator.deserializers.components.*;
 import re.sylfa.itemcreator.deserializers.types.*;
 import re.sylfa.itemcreator.items.CustomItem;
 import re.sylfa.itemcreator.items.ItemReader;
@@ -103,7 +102,8 @@ public class ItemCreator extends JavaPlugin {
 
     private void registerMappers() {
         SimpleModule module = new SimpleModule();
-        module.addDeserializer(ItemStack.class, new ItemDeserializer())
+        module.addDeserializer(CustomItem.class, new CustomItemDeserializer())
+            .addDeserializer(ItemStack.class, new ItemDeserializer())
             .addDeserializer(Material.class, new MaterialDeserializer())
             .addDeserializer(Component.class, new TextComponentDeserializer())
             .addDeserializer(NamespacedKey.class, new NamespacedKeyDeserializer())
@@ -111,7 +111,9 @@ public class ItemCreator extends JavaPlugin {
             .addDeserializer(Key.class, new KeyDeserializer())
             .addDeserializer(ToolComponent.class, new ToolDeserializer())
             .addDeserializer(ToolRuleDeserializer.RuleValues.class, new ToolRuleDeserializer())
-            .addDeserializer(JukeboxPlayableComponent.class, new JukeboxPlayableDeserializer());
+            .addDeserializer(JukeboxPlayableComponent.class, new JukeboxPlayableDeserializer())
+            .addDeserializer(Consumable.class, new ConsumableDeserializer())
+            .addDeserializer(FoodComponent.class, new FoodDeserializer());
 
         mapper.registerModule(module);
 
