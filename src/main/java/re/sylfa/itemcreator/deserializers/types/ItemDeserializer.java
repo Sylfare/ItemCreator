@@ -7,10 +7,12 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import net.minecraft.core.component.DataComponents;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.EquippableComponent;
+import org.bukkit.inventory.meta.components.JukeboxPlayableComponent;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import re.sylfa.itemcreator.util.Parsers;
 
@@ -48,6 +50,10 @@ public class ItemDeserializer extends StdDeserializer<ItemStack> {
         parseEquippable(node, item);
         parseMaxDamage(node, item);
         parseTool(node, item);
+        parseGlider(node, item);
+        parseEnchantmentGlintOverride(node, item);
+        parseRarity(node, item);
+        parseJukeboxPlayable(node, item);
         return item;
     }
 
@@ -85,5 +91,25 @@ public class ItemDeserializer extends StdDeserializer<ItemStack> {
     void parseTool(JsonNode node, ItemStack item) {
         Parsers.getNodeValue(node, "tool", JsonNode::isObject, ToolComponent.class)
             .ifPresent(tool -> item.editMeta(itemMeta -> itemMeta.setTool(tool)));
+    }
+
+    void parseGlider(JsonNode node, ItemStack item) {
+        Parsers.getBooleanNodeValue(node, "glider")
+            .ifPresent(glider -> item.editMeta(itemMeta -> itemMeta.setGlider(glider)));
+    }
+
+    void parseEnchantmentGlintOverride(JsonNode node, ItemStack item) {
+        Parsers.getBooleanNodeValue(node, "enchantmentGlintOverride")
+            .ifPresent(override -> item.editMeta(itemMeta -> itemMeta.setEnchantmentGlintOverride(override)));
+    }
+
+    void parseRarity(JsonNode node, ItemStack item) {
+        Parsers.getNodeValue(node, "rarity", JsonNode::isTextual, ItemRarity.class)
+            .ifPresent(rarity -> item.editMeta(itemMeta -> itemMeta.setRarity(rarity)));
+    }
+
+    void parseJukeboxPlayable(JsonNode node, ItemStack item) {
+        Parsers.getNodeValue(node, "jukeboxPlayable", JsonNode::isTextual, JukeboxPlayableComponent.class)
+            .ifPresent(song -> item.editMeta(itemMeta -> itemMeta.setJukeboxPlayable(song)));
     }
 }
