@@ -1,17 +1,15 @@
 package re.sylfa.itemcreator.items;
 
-import java.util.Map;
-
+import net.kyori.adventure.key.Key;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
-import java.util.Arrays;
-import java.util.Optional;
-
-import net.kyori.adventure.key.Key;
 import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.util.Log;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class ItemRegistry {
     final Map<Key, CustomItem> itemList = new HashMap<>();
@@ -54,7 +52,7 @@ public class ItemRegistry {
         var itemRegistry = ItemCreator.getItemRegistry();
         Optional<CustomItem> item = itemRegistry.get(key);
         if(item.isPresent()) {
-            return item.get().getItem();
+            return item.get().asItemStack();
         } else {
             Log.warn("Material not found: %s", key.asString());
             return null;

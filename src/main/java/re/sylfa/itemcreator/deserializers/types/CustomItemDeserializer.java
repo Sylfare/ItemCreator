@@ -62,11 +62,14 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
         parseRarity(node, item);
         parseJukeboxPlayable(node, item);
         parseAmount(node, item);
-        parseUseRemainder(node, item);
         parseFood(node, item);
         parseConsumable(node, item);
 
-        return new CustomItem(item);
+
+        CustomItem.Builder builder = CustomItem.builder()
+            .item(item);
+        Parsers.getNodeItemKeyValue(node, "useRemainder").ifPresent(builder::useRemainder);
+        return builder.build();
     }
 
     void parseConsumable(JsonNode node, ItemStack item) {
@@ -136,10 +139,5 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
     void parseJukeboxPlayable(JsonNode node, ItemStack item) {
         Parsers.getNodeValue(node, "jukeboxPlayable", JsonNode::isTextual, JukeboxPlayableComponent.class)
             .ifPresent(song -> item.editMeta(itemMeta -> itemMeta.setJukeboxPlayable(song)));
-    }
-
-    void parseUseRemainder(JsonNode node, ItemStack item) {
-        Parsers.getNodeItemStackValue(node, "useRemainder")
-            .ifPresent(remainder -> item.editMeta(itemMeta -> itemMeta.setUseRemainder(remainder)));
     }
 }

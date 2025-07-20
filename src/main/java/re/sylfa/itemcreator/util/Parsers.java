@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.deserializers.components.ToolRuleDeserializer;
+import re.sylfa.itemcreator.items.ItemKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,5 +93,9 @@ public interface Parsers {
 
     static Optional<ItemStack> getNodeItemStackValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, jsonNode -> jsonNode.isTextual() || jsonNode.isObject(), ItemStack.class);
+    }
+
+    static Optional<ItemKey> getNodeItemKeyValue(@NonNull JsonNode node, @NonNull String valueName) {
+        return getNodeValue(node, valueName, jsonNode -> jsonNode.isTextual() || jsonNode.isObject(), ItemKey.class);
     }
 }

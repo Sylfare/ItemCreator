@@ -28,6 +28,7 @@ import re.sylfa.itemcreator.commands.ItemCreatorCommand;
 import re.sylfa.itemcreator.deserializers.components.*;
 import re.sylfa.itemcreator.deserializers.types.*;
 import re.sylfa.itemcreator.items.CustomItem;
+import re.sylfa.itemcreator.items.ItemKey;
 import re.sylfa.itemcreator.items.ItemReader;
 import re.sylfa.itemcreator.items.ItemRegistry;
 import re.sylfa.itemcreator.recipes.CustomRecipe;
@@ -113,7 +114,8 @@ public class ItemCreator extends JavaPlugin {
             .addDeserializer(ToolRuleDeserializer.RuleValues.class, new ToolRuleDeserializer())
             .addDeserializer(JukeboxPlayableComponent.class, new JukeboxPlayableDeserializer())
             .addDeserializer(Consumable.class, new ConsumableDeserializer())
-            .addDeserializer(FoodComponent.class, new FoodDeserializer());
+            .addDeserializer(FoodComponent.class, new FoodDeserializer())
+            .addDeserializer(ItemKey.class, new ItemKeyDeserializer());
 
         mapper.registerModule(module);
 
