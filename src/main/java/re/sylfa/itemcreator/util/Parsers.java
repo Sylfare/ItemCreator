@@ -3,6 +3,7 @@ package re.sylfa.itemcreator.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -14,6 +15,7 @@ import re.sylfa.itemcreator.items.ItemKey;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -102,5 +104,9 @@ public interface Parsers {
 
     static Optional<PotionEffect> getNodePotionEffectValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, JsonNode::isObject, PotionEffect.class);
+    }
+
+    static Optional<Color> getNodeColorValue(@NonNull JsonNode node, @NonNull String valueName) {
+        return getNodeValue(node, valueName, Objects::nonNull, Color.class);
     }
 }

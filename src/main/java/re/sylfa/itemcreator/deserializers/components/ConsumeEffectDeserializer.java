@@ -43,7 +43,7 @@ public class ConsumeEffectDeserializer extends StdDeserializer<ConsumeEffect> {
                         potionEffects.add(potionEffect);
                     }
                 }
-                
+
                 float probability = Parsers.getFloatNodeValue(node, "probability").orElse(1.0f);
                 yield ConsumeEffect.applyStatusEffects(potionEffects, probability);
             }
@@ -65,7 +65,7 @@ public class ConsumeEffectDeserializer extends StdDeserializer<ConsumeEffect> {
                     }
                     Key key = Key.key(rawKey);
 
-                    PotionEffectType effectType = Registry.EFFECT.get(key);
+                    PotionEffectType effectType = Registry.MOB_EFFECT.get(key);
                     if(effectType != null) {
                         effectTypes.add(effectType);
                     }

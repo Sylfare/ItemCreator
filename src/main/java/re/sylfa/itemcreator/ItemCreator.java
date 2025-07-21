@@ -11,9 +11,7 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.components.EquippableComponent;
@@ -123,7 +121,9 @@ public class ItemCreator extends JavaPlugin {
             .addDeserializer(PotionEffect.class, new PotionEffectDeserializer())
             .addDeserializer(DeathProtection.class, new DeathProtectionDeserializer())
             .addDeserializer(ConsumeEffect.class, new ConsumeEffectDeserializer())
-            .addDeserializer(PotionEffectType.class, new PotionEffectTypeDeserializer());
+            .addDeserializer(PotionEffectType.class, new PotionEffectTypeDeserializer())
+            .addDeserializer(Color.class, new ColorDeserializer())
+            .addDeserializer(MusicInstrument.class, new MusicInstrumentDeserializer());
 
         mapper.registerModule(module);
 

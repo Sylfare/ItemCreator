@@ -7,8 +7,10 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.DeathProtection;
+import io.papermc.paper.datacomponent.item.DyedItemColor;
 import net.minecraft.core.component.DataComponents;
 import org.bukkit.Material;
+import org.bukkit.MusicInstrument;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
@@ -23,6 +25,7 @@ import re.sylfa.itemcreator.util.Parsers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
 
@@ -82,6 +85,10 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
             .ifPresent(damage -> item.editMeta(Damageable.class, itemMeta -> itemMeta.setDamage(damage)));
         Parsers.getNodeValue(node, "deathProtection", JsonNode::isArray, DeathProtection.class)
             .ifPresent(deathProtection -> item.setData(DataComponentTypes.DEATH_PROTECTION, deathProtection));
+        Parsers.getNodeColorValue(node, "dyedColor")
+            .ifPresent(color -> item.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor(color)));
+        Parsers.getNodeValue(node, "instrument", Objects::nonNull, MusicInstrument.class)
+            .ifPresent(instrument -> item.setData(DataComponentTypes.INSTRUMENT, instrument));
 
 
         CustomItem.Builder builder = CustomItem.builder()
