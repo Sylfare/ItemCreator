@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
+import io.papermc.paper.datacomponent.item.DeathProtection;
 import net.minecraft.core.component.DataComponents;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -50,20 +51,37 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
         ItemStack item = itemNms.asBukkitCopy();
 
 
-        parseItemName(node, item);
-        parseLore(node, item);
-        parseMaxStackSize(node, item);
-        parseItemModel(node, item);
-        parseEquippable(node, item);
-        parseMaxDamage(node, item);
-        parseTool(node, item);
-        parseGlider(node, item);
-        parseEnchantmentGlintOverride(node, item);
-        parseRarity(node, item);
-        parseJukeboxPlayable(node, item);
-        parseAmount(node, item);
-        parseFood(node, item);
-        parseConsumable(node, item);
+        Parsers.getNodeComponentValue(node, "itemName")
+            .ifPresent(itemName -> item.editMeta(ItemMeta.class, meta -> meta.itemName(itemName)));
+        Parsers.getComponentArrayNodeValue(node, "lore")
+            .ifPresent(loreLines -> item.editMeta(itemMeta -> itemMeta.lore(List.of(loreLines))));
+        Parsers.getNodeIntValue(node, "maxStackSize")
+            .ifPresent(maxStackSize -> item.editMeta(itemMeta -> itemMeta.setMaxStackSize(maxStackSize)));
+        Parsers.getNodeNamespacedKeyValue(node, "itemModel")
+            .ifPresent(modelKey -> item.editMeta(itemMeta -> itemMeta.setItemModel(modelKey)));
+        Parsers.getNodeValue(node, "equippable", JsonNode::isObject, EquippableComponent.class)
+            .ifPresent(equippable -> item.editMeta(itemMeta -> itemMeta.setEquippable(equippable)));
+        Parsers.getNodeIntValue(node, "maxDamage")
+            .ifPresent(maxDamage -> item.editMeta(Damageable.class, itemMeta -> itemMeta.setMaxDamage(maxDamage)));
+        Parsers.getNodeValue(node, "tool", JsonNode::isObject, ToolComponent.class)
+            .ifPresent(tool -> item.editMeta(itemMeta -> itemMeta.setTool(tool)));
+        Parsers.getBooleanNodeValue(node, "glider")
+            .ifPresent(glider -> item.editMeta(itemMeta -> itemMeta.setGlider(glider)));
+        Parsers.getBooleanNodeValue(node, "enchantmentGlintOverride")
+            .ifPresent(override -> item.editMeta(itemMeta -> itemMeta.setEnchantmentGlintOverride(override)));
+        Parsers.getNodeValue(node, "rarity", JsonNode::isTextual, ItemRarity.class)
+            .ifPresent(rarity -> item.editMeta(itemMeta -> itemMeta.setRarity(rarity)));
+        Parsers.getNodeValue(node, "jukeboxPlayable", JsonNode::isTextual, JukeboxPlayableComponent.class)
+            .ifPresent(song -> item.editMeta(itemMeta -> itemMeta.setJukeboxPlayable(song)));
+        Parsers.getNodeIntValue(node, "amount").ifPresent(item::setAmount);
+        Parsers.getNodeValue(node, "food", JsonNode::isObject, FoodComponent.class)
+            .ifPresent(food -> item.editMeta(itemMeta -> itemMeta.setFood(food)));
+        Parsers.getNodeValue(node, "consumable", JsonNode::isObject, Consumable.class)
+            .ifPresent(consumable -> item.setData(DataComponentTypes.CONSUMABLE, consumable));
+        Parsers.getNodeIntValue(node, "damage")
+            .ifPresent(damage -> item.editMeta(Damageable.class, itemMeta -> itemMeta.setDamage(damage)));
+        Parsers.getNodeValue(node, "deathProtection", JsonNode::isArray, DeathProtection.class)
+            .ifPresent(deathProtection -> item.setData(DataComponentTypes.DEATH_PROTECTION, deathProtection));
 
 
         CustomItem.Builder builder = CustomItem.builder()
@@ -72,72 +90,4 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
         return builder.build();
     }
 
-    void parseConsumable(JsonNode node, ItemStack item) {
-        Parsers.getNodeValue(node, "consumable", JsonNode::isObject, Consumable.class)
-            .ifPresent(consumable -> item.setData(DataComponentTypes.CONSUMABLE, consumable));
-    }
-
-    void parseFood(JsonNode node, ItemStack item) {
-        Parsers.getNodeValue(node, "food", JsonNode::isObject, FoodComponent.class)
-            .ifPresent(food -> item.editMeta(itemMeta -> itemMeta.setFood(food)));
-    }
-
-    void parseAmount(JsonNode node, ItemStack item) {
-        Parsers.getNodeIntValue(node, "amount").ifPresent(item::setAmount);
-    }
-
-    void parseLore(JsonNode node, ItemStack item) {
-        Parsers.getComponentArrayNodeValue(node, "lore")
-            .ifPresent(loreLines -> item.editMeta(itemMeta -> itemMeta.lore(List.of(loreLines))));
-    }
-
-    void parseItemName(JsonNode node, ItemStack item) {
-        Parsers.getNodeComponentValue(node, "itemName")
-            .ifPresent(itemName -> item.editMeta(ItemMeta.class, meta -> meta.itemName(itemName)));
-    }
-
-    void parseMaxStackSize(JsonNode node, ItemStack item) {
-        Parsers.getNodeIntValue(node, "maxStackSize")
-            .ifPresent(maxStackSize -> item.editMeta(itemMeta -> itemMeta.setMaxStackSize(maxStackSize)));
-    }
-
-    void parseItemModel(JsonNode node, ItemStack item) {
-        Parsers.getNodeNamespacedKeyValue(node, "itemModel")
-            .ifPresent(modelKey -> item.editMeta(itemMeta -> itemMeta.setItemModel(modelKey)));
-    }
-
-    void parseEquippable(JsonNode node, ItemStack item) {
-        Parsers.getNodeValue(node, "equippable", JsonNode::isObject, EquippableComponent.class)
-            .ifPresent(equippable -> item.editMeta(itemMeta -> itemMeta.setEquippable(equippable)));
-    }
-
-    void parseMaxDamage(JsonNode node, ItemStack item) {
-        Parsers.getNodeIntValue(node, "maxDamage")
-            .ifPresent(maxDamage -> item.editMeta(Damageable.class, itemMeta -> itemMeta.setMaxDamage(maxDamage)));
-    }
-
-    void parseTool(JsonNode node, ItemStack item) {
-        Parsers.getNodeValue(node, "tool", JsonNode::isObject, ToolComponent.class)
-            .ifPresent(tool -> item.editMeta(itemMeta -> itemMeta.setTool(tool)));
-    }
-
-    void parseGlider(JsonNode node, ItemStack item) {
-        Parsers.getBooleanNodeValue(node, "glider")
-            .ifPresent(glider -> item.editMeta(itemMeta -> itemMeta.setGlider(glider)));
-    }
-
-    void parseEnchantmentGlintOverride(JsonNode node, ItemStack item) {
-        Parsers.getBooleanNodeValue(node, "enchantmentGlintOverride")
-            .ifPresent(override -> item.editMeta(itemMeta -> itemMeta.setEnchantmentGlintOverride(override)));
-    }
-
-    void parseRarity(JsonNode node, ItemStack item) {
-        Parsers.getNodeValue(node, "rarity", JsonNode::isTextual, ItemRarity.class)
-            .ifPresent(rarity -> item.editMeta(itemMeta -> itemMeta.setRarity(rarity)));
-    }
-
-    void parseJukeboxPlayable(JsonNode node, ItemStack item) {
-        Parsers.getNodeValue(node, "jukeboxPlayable", JsonNode::isTextual, JukeboxPlayableComponent.class)
-            .ifPresent(song -> item.editMeta(itemMeta -> itemMeta.setJukeboxPlayable(song)));
-    }
 }

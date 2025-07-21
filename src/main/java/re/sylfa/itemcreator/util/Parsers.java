@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.deserializers.components.ToolRuleDeserializer;
@@ -97,5 +98,9 @@ public interface Parsers {
 
     static Optional<ItemKey> getNodeItemKeyValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, jsonNode -> jsonNode.isTextual() || jsonNode.isObject(), ItemKey.class);
+    }
+
+    static Optional<PotionEffect> getNodePotionEffectValue(@NonNull JsonNode node, @NonNull String valueName) {
+        return getNodeValue(node, valueName, JsonNode::isObject, PotionEffect.class);
     }
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.datacomponent.item.Consumable;
+import io.papermc.paper.datacomponent.item.DeathProtection;
+import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
@@ -22,6 +24,8 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.permissions.CommandPermissions;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import re.sylfa.itemcreator.commands.ItemCreatorCommand;
@@ -115,7 +119,11 @@ public class ItemCreator extends JavaPlugin {
             .addDeserializer(JukeboxPlayableComponent.class, new JukeboxPlayableDeserializer())
             .addDeserializer(Consumable.class, new ConsumableDeserializer())
             .addDeserializer(FoodComponent.class, new FoodDeserializer())
-            .addDeserializer(ItemKey.class, new ItemKeyDeserializer());
+            .addDeserializer(ItemKey.class, new ItemKeyDeserializer())
+            .addDeserializer(PotionEffect.class, new PotionEffectDeserializer())
+            .addDeserializer(DeathProtection.class, new DeathProtectionDeserializer())
+            .addDeserializer(ConsumeEffect.class, new ConsumeEffectDeserializer())
+            .addDeserializer(PotionEffectType.class, new PotionEffectTypeDeserializer());
 
         mapper.registerModule(module);
 
