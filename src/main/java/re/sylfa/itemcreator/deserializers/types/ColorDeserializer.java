@@ -98,10 +98,10 @@ public class ColorDeserializer extends StdDeserializer<Color> {
         // as an object {"red": 255, "blue": 120, "green": 41, "alpha": 255}
         if(node.isObject()) {
             Map<String, Object> map = ItemCreator.getMapper().convertValue(node, Map.class);
-            Optional<Integer> red = Parsers.getNodeIntValue(node, "red");
-            Optional<Integer> green = Parsers.getNodeIntValue(node, "green");
-            Optional<Integer> blue = Parsers.getNodeIntValue(node, "blue");
-            Optional<Integer> alpha = Parsers.getNodeIntValue(node, "alpha");
+            Optional<Integer> red = Parsers.getIntNodeValue(node, "red");
+            Optional<Integer> green = Parsers.getIntNodeValue(node, "green");
+            Optional<Integer> blue = Parsers.getIntNodeValue(node, "blue");
+            Optional<Integer> alpha = Parsers.getIntNodeValue(node, "alpha");
             if(red.isEmpty() || blue.isEmpty() || green.isEmpty()) {
                 return null;
             }

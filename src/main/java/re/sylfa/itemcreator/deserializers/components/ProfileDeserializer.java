@@ -29,7 +29,7 @@ public class ProfileDeserializer extends StdDeserializer<ResolvableProfile> {
         ResolvableProfile.Builder builder = ResolvableProfile.resolvableProfile();
 
         Parsers.getStringNodeValue(node, "name").ifPresent(builder::name);
-        Parsers.getNodeUUIDValue(node, "uuid").ifPresent(builder::uuid);
+        Parsers.getUUIDNodeValue(node, "uuid").ifPresent(builder::uuid);
 
         if(node.has("property")) {
             Parsers.getNodeValue(node, "property", JsonNode::isObject, ProfileProperty.class)

@@ -27,7 +27,7 @@ public class ConsumableDeserializer extends StdDeserializer<Consumable> {
             .ifPresent(builder::animation);
         Parsers.getFloatNodeValue(node, "consumeSeconds").ifPresent(builder::consumeSeconds);
         Parsers.getBooleanNodeValue(node, "hasConsumeParticles").ifPresent(builder::hasConsumeParticles);
-        Parsers.getNodeKeyValue(node, "sound").ifPresent(builder::sound);
+        Parsers.getKeyNodeValue(node, "sound").ifPresent(builder::sound);
         JsonNode effects = node.get("effects");
         if(effects != null) {
             if(effects.isArray()) {

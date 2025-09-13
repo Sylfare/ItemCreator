@@ -35,13 +35,13 @@ public class MusicInstrumentDeserializer extends StdDeserializer<MusicInstrument
 
         // by inline instrument
         if(node.isObject()) {
-            Optional<Key> soundKey = Parsers.getNodeKeyValue(node, "soundKey");
+            Optional<Key> soundKey = Parsers.getKeyNodeValue(node, "soundKey");
             if (soundKey.isEmpty()) {
                 return null;
             }
             Optional<Float> duration = Parsers.getFloatNodeValue(node, "duration");
             Optional<Float> range = Parsers.getFloatNodeValue(node, "range");
-            Optional<Component> description = Parsers.getNodeComponentValue(node, "description");
+            Optional<Component> description = Parsers.getComponentNodeValue(node, "description");
             TypedKey<Sound> typedKey = RegistryKey.SOUND_EVENT.typedKey(soundKey.get());
 
             return MusicInstrument.create(builder -> builder.empty()

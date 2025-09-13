@@ -24,7 +24,7 @@ public class ToolDeserializer extends StdDeserializer<ToolComponent> {
             return null;
         }
         ToolComponent toolComponent = new ItemStack(Material.STONE).getItemMeta().getTool();
-        Parsers.getNodeIntValue(node, "damagePerBlock").ifPresent(toolComponent::setDamagePerBlock);
+        Parsers.getIntNodeValue(node, "damagePerBlock").ifPresent(toolComponent::setDamagePerBlock);
         Parsers.getFloatNodeValue(node, "defaultMiningSpeed").ifPresent(toolComponent::setDefaultMiningSpeed);
         Parsers.getToolRulesArrayNodeValue(node, "rules")
             .ifPresent(rulesList -> rulesList.forEach(ruleValue -> toolComponent.addRule(ruleValue.block(), ruleValue.speed(), ruleValue.correctForDrops())));

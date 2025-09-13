@@ -15,7 +15,11 @@ import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.util.Parsers;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class ConsumeEffectDeserializer extends StdDeserializer<ConsumeEffect> {
 
@@ -48,7 +52,7 @@ public class ConsumeEffectDeserializer extends StdDeserializer<ConsumeEffect> {
                 yield ConsumeEffect.applyStatusEffects(potionEffects, probability);
             }
             case CLEAR_ALL_STATUS_EFFECTS -> ConsumeEffect.clearAllStatusEffects();
-            case PLAY_SOUND -> Parsers.getNodeKeyValue(node, "sound")
+            case PLAY_SOUND -> Parsers.getKeyNodeValue(node, "sound")
                 .map(ConsumeEffect::playSoundConsumeEffect)
                 .orElse(null);
             case REMOVE_STATUS_EFFECTS -> {

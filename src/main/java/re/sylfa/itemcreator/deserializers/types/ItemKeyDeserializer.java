@@ -24,8 +24,8 @@ public class ItemKeyDeserializer extends StdDeserializer<ItemKey> {
         Optional<Key> key;
         Optional<Integer> amount;
         if(node.isObject()) {
-            key = Parsers.getNodeKeyValue(node, "id");
-            amount = Parsers.getNodeIntValue(node, "amount");
+            key = Parsers.getKeyNodeValue(node, "id");
+            amount = Parsers.getIntNodeValue(node, "amount");
         } else if (node.isTextual() && !node.asText().isBlank()){
             key = Optional.of(Key.key(node.asText()));
             amount = Optional.of(1);

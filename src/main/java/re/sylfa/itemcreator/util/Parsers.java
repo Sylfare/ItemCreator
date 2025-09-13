@@ -79,39 +79,39 @@ public interface Parsers {
         return Optional.of(ruleValues);
     }
 
-    static Optional<Integer> getNodeIntValue(@NonNull JsonNode node, @NonNull String valueName) {
+    static Optional<Integer> getIntNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, JsonNode::isIntegralNumber, Integer.class);
     }
 
-    static Optional<Component> getNodeComponentValue(@NonNull JsonNode node, @NonNull String valueName) {
+    static Optional<Component> getComponentNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, JsonNode::isTextual, Component.class);
     }
 
-    static Optional<NamespacedKey> getNodeNamespacedKeyValue(@NonNull JsonNode node, @NonNull String valueName) {
+    static Optional<NamespacedKey> getNamespacedKeyNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, JsonNode::isTextual, NamespacedKey.class);
     }
 
-    static Optional<Key> getNodeKeyValue(@NonNull JsonNode node, @NonNull String valueName) {
+    static Optional<Key> getKeyNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, JsonNode::isTextual, Key.class);
     }
 
-    static Optional<ItemStack> getNodeItemStackValue(@NonNull JsonNode node, @NonNull String valueName) {
+    static Optional<ItemStack> getItemStackNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, jsonNode -> jsonNode.isTextual() || jsonNode.isObject(), ItemStack.class);
     }
 
-    static Optional<ItemKey> getNodeItemKeyValue(@NonNull JsonNode node, @NonNull String valueName) {
+    static Optional<ItemKey> getItemKeyNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, jsonNode -> jsonNode.isTextual() || jsonNode.isObject(), ItemKey.class);
     }
 
-    static Optional<PotionEffect> getNodePotionEffectValue(@NonNull JsonNode node, @NonNull String valueName) {
+    static Optional<PotionEffect> getPotionEffectNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, JsonNode::isObject, PotionEffect.class);
     }
 
-    static Optional<Color> getNodeColorValue(@NonNull JsonNode node, @NonNull String valueName) {
+    static Optional<Color> getColorNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, Objects::nonNull, Color.class);
     }
 
-    static Optional<UUID> getNodeUUIDValue(@NonNull JsonNode node, @NonNull String valueName) {
+    static Optional<UUID> getUUIDNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, n -> n.isTextual() && !n.isEmpty(), UUID.class);
     }
 }

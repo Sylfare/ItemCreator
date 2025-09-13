@@ -44,8 +44,8 @@ public class EquippableDeserializer extends StdDeserializer<EquippableComponent>
         Parsers.getBooleanNodeValue(node, "dispensable").ifPresent(equippableComponent::setDispensable);
         Parsers.getBooleanNodeValue(node, "damageOnHurt").ifPresent(damage -> equippableComponent.setDamageOnHurt(damage));
         Parsers.getBooleanNodeValue(node, "equipOnInteract").ifPresent(equippableComponent::setEquipOnInteract);
-        Parsers.getNodeNamespacedKeyValue(node, "model").ifPresent(equippableComponent::setModel);
-        Parsers.getNodeNamespacedKeyValue(node, "cameraOverlay").ifPresent(equippableComponent::setCameraOverlay);
+        Parsers.getNamespacedKeyNodeValue(node, "model").ifPresent(equippableComponent::setModel);
+        Parsers.getNamespacedKeyNodeValue(node, "cameraOverlay").ifPresent(equippableComponent::setCameraOverlay);
         Optional.ofNullable(slot).ifPresent(equippableComponent::setSlot);
 
         return equippableComponent;

@@ -24,7 +24,7 @@ public class FoodDeserializer extends StdDeserializer<FoodComponent> {
 
         FoodComponent component = new ItemStack(Material.STONE).getItemMeta().getFood();
         Parsers.getBooleanNodeValue(node, "canAlwaysEat").ifPresent(component::setCanAlwaysEat);
-        Parsers.getNodeIntValue(node, "nutrition").ifPresent(component::setNutrition);
+        Parsers.getIntNodeValue(node, "nutrition").ifPresent(component::setNutrition);
         Parsers.getFloatNodeValue(node, "saturation").ifPresent(component::setSaturation);
         return component;
     }

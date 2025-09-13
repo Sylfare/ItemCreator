@@ -57,17 +57,17 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
         ItemStack item = itemNms.asBukkitCopy();
 
 
-        Parsers.getNodeComponentValue(node, "itemName")
+        Parsers.getComponentNodeValue(node, "itemName")
             .ifPresent(itemName -> item.editMeta(ItemMeta.class, meta -> meta.itemName(itemName)));
         Parsers.getComponentArrayNodeValue(node, "lore")
             .ifPresent(loreLines -> item.editMeta(itemMeta -> itemMeta.lore(List.of(loreLines))));
-        Parsers.getNodeIntValue(node, "maxStackSize")
+        Parsers.getIntNodeValue(node, "maxStackSize")
             .ifPresent(maxStackSize -> item.editMeta(itemMeta -> itemMeta.setMaxStackSize(maxStackSize)));
-        Parsers.getNodeNamespacedKeyValue(node, "itemModel")
+        Parsers.getNamespacedKeyNodeValue(node, "itemModel")
             .ifPresent(modelKey -> item.editMeta(itemMeta -> itemMeta.setItemModel(modelKey)));
         Parsers.getNodeValue(node, "equippable", JsonNode::isObject, EquippableComponent.class)
             .ifPresent(equippable -> item.editMeta(itemMeta -> itemMeta.setEquippable(equippable)));
-        Parsers.getNodeIntValue(node, "maxDamage")
+        Parsers.getIntNodeValue(node, "maxDamage")
             .ifPresent(maxDamage -> item.editMeta(Damageable.class, itemMeta -> itemMeta.setMaxDamage(maxDamage)));
         Parsers.getNodeValue(node, "tool", JsonNode::isObject, ToolComponent.class)
             .ifPresent(tool -> item.editMeta(itemMeta -> itemMeta.setTool(tool)));
@@ -79,16 +79,16 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
             .ifPresent(rarity -> item.editMeta(itemMeta -> itemMeta.setRarity(rarity)));
         Parsers.getNodeValue(node, "jukeboxPlayable", JsonNode::isTextual, JukeboxPlayableComponent.class)
             .ifPresent(song -> item.editMeta(itemMeta -> itemMeta.setJukeboxPlayable(song)));
-        Parsers.getNodeIntValue(node, "amount").ifPresent(item::setAmount);
+        Parsers.getIntNodeValue(node, "amount").ifPresent(item::setAmount);
         Parsers.getNodeValue(node, "food", JsonNode::isObject, FoodComponent.class)
             .ifPresent(food -> item.editMeta(itemMeta -> itemMeta.setFood(food)));
         Parsers.getNodeValue(node, "consumable", JsonNode::isObject, Consumable.class)
             .ifPresent(consumable -> item.setData(DataComponentTypes.CONSUMABLE, consumable));
-        Parsers.getNodeIntValue(node, "damage")
+        Parsers.getIntNodeValue(node, "damage")
             .ifPresent(damage -> item.editMeta(Damageable.class, itemMeta -> itemMeta.setDamage(damage)));
         Parsers.getNodeValue(node, "deathProtection", JsonNode::isArray, DeathProtection.class)
             .ifPresent(deathProtection -> item.setData(DataComponentTypes.DEATH_PROTECTION, deathProtection));
-        Parsers.getNodeColorValue(node, "dyedColor")
+        Parsers.getColorNodeValue(node, "dyedColor")
             .ifPresent(color -> item.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor(color)));
         Parsers.getNodeValue(node, "instrument", Objects::nonNull, MusicInstrument.class)
             .ifPresent(instrument -> item.setData(DataComponentTypes.INSTRUMENT, instrument));
@@ -100,7 +100,7 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
 
         CustomItem.Builder builder = CustomItem.builder()
             .item(item);
-        Parsers.getNodeItemKeyValue(node, "useRemainder").ifPresent(builder::useRemainder);
+        Parsers.getItemKeyNodeValue(node, "useRemainder").ifPresent(builder::useRemainder);
         return builder.build();
     }
 

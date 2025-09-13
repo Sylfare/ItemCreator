@@ -22,8 +22,8 @@ public class PotionEffectDeserializer extends StdDeserializer<PotionEffect> {
             return null;
         }
         Optional<PotionEffectType> type = Parsers.getNodeValue(node, "type", JsonNode::isTextual, PotionEffectType.class);
-        Optional<Integer> duration = Parsers.getNodeIntValue(node, "duration");
-        Optional<Integer> amplifier = Parsers.getNodeIntValue(node, "amplifier");
+        Optional<Integer> duration = Parsers.getIntNodeValue(node, "duration");
+        Optional<Integer> amplifier = Parsers.getIntNodeValue(node, "amplifier");
         boolean ambient = Parsers.getBooleanNodeValue(node, "ambient").orElse(true);
         boolean particles = Parsers.getBooleanNodeValue(node, "particles").orElse(true);
         boolean icon = Parsers.getBooleanNodeValue(node, "icon").orElse(true);
