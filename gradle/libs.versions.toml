@@ -2,13 +2,13 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 [versions]
 paper = "1.21.8-R0.1-SNAPSHOT"
-paperweight = "2.0.0-beta.17"
+paperweight = "2.0.0-beta.18"
 brigadier = "1.0.18"
-runPaper = "2.3.1"
+runPaper = "3.0.0-beta.1"
 lombok = "1.18.38"
-adventure = "4.20.0"
-commonsIo = "2.19.0"
-jackson = "2.19.2"
+adventure = "4.24.0"
+commonsIo = "2.20.0"
+jackson = "2.20.0"
 
 [libraries]
 brigadier = {group = "com.mojang", name = "brigadier", version.ref = "brigadier"}

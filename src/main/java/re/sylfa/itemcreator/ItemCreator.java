@@ -1,17 +1,24 @@
 package re.sylfa.itemcreator;
 
+import com.destroystokyo.paper.profile.ProfileProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.DeathProtection;
+import io.papermc.paper.datacomponent.item.Enchantable;
+import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Material;
+import org.bukkit.MusicInstrument;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.components.EquippableComponent;
@@ -27,8 +34,27 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.permissions.CommandPermissions;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import re.sylfa.itemcreator.commands.ItemCreatorCommand;
-import re.sylfa.itemcreator.deserializers.components.*;
-import re.sylfa.itemcreator.deserializers.types.*;
+import re.sylfa.itemcreator.deserializers.components.ConsumableDeserializer;
+import re.sylfa.itemcreator.deserializers.components.ConsumeEffectDeserializer;
+import re.sylfa.itemcreator.deserializers.components.DeathProtectionDeserializer;
+import re.sylfa.itemcreator.deserializers.components.EnchantableDeserializer;
+import re.sylfa.itemcreator.deserializers.components.EquippableDeserializer;
+import re.sylfa.itemcreator.deserializers.components.FoodDeserializer;
+import re.sylfa.itemcreator.deserializers.components.JukeboxPlayableDeserializer;
+import re.sylfa.itemcreator.deserializers.components.MusicInstrumentDeserializer;
+import re.sylfa.itemcreator.deserializers.components.PotionEffectDeserializer;
+import re.sylfa.itemcreator.deserializers.components.PotionEffectTypeDeserializer;
+import re.sylfa.itemcreator.deserializers.components.ProfileDeserializer;
+import re.sylfa.itemcreator.deserializers.components.ToolDeserializer;
+import re.sylfa.itemcreator.deserializers.components.ToolRuleDeserializer;
+import re.sylfa.itemcreator.deserializers.types.ColorDeserializer;
+import re.sylfa.itemcreator.deserializers.types.CustomItemDeserializer;
+import re.sylfa.itemcreator.deserializers.types.ItemDeserializer;
+import re.sylfa.itemcreator.deserializers.types.ItemKeyDeserializer;
+import re.sylfa.itemcreator.deserializers.types.KeyDeserializer;
+import re.sylfa.itemcreator.deserializers.types.MaterialDeserializer;
+import re.sylfa.itemcreator.deserializers.types.NamespacedKeyDeserializer;
+import re.sylfa.itemcreator.deserializers.types.TextComponentDeserializer;
 import re.sylfa.itemcreator.items.CustomItem;
 import re.sylfa.itemcreator.items.ItemKey;
 import re.sylfa.itemcreator.items.ItemReader;
@@ -123,7 +149,11 @@ public class ItemCreator extends JavaPlugin {
             .addDeserializer(ConsumeEffect.class, new ConsumeEffectDeserializer())
             .addDeserializer(PotionEffectType.class, new PotionEffectTypeDeserializer())
             .addDeserializer(Color.class, new ColorDeserializer())
-            .addDeserializer(MusicInstrument.class, new MusicInstrumentDeserializer());
+            .addDeserializer(MusicInstrument.class, new MusicInstrumentDeserializer())
+            .addDeserializer(Enchantable.class, new EnchantableDeserializer())
+            .addDeserializer(ResolvableProfile.class, new ProfileDeserializer())
+            .addDeserializer(ProfileProperty.class, new ProfileDeserializer.ProfilePropertyDeserializer())
+        ;
 
         mapper.registerModule(module);
 

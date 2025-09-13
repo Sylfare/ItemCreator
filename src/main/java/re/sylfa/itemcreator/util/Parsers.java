@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 public interface Parsers {
@@ -108,5 +109,9 @@ public interface Parsers {
 
     static Optional<Color> getNodeColorValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, Objects::nonNull, Color.class);
+    }
+
+    static Optional<UUID> getNodeUUIDValue(@NonNull JsonNode node, @NonNull String valueName) {
+        return getNodeValue(node, valueName, n -> n.isTextual() && !n.isEmpty(), UUID.class);
     }
 }

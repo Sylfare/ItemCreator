@@ -21,9 +21,9 @@ public class ColorDeserializer extends StdDeserializer<Color> {
             case "AQUA" -> Color.AQUA;
             case "BLACK" -> Color.BLACK;
             case "BLUE" -> Color.BLUE;
-            case "FUSCHIA" -> Color.FUCHSIA;
+            case "FUCHSIA" -> Color.FUCHSIA;
             case "GRAY" -> Color.GRAY;
-            case "GREEEN" -> Color.GREEN;
+            case "GREEN" -> Color.GREEN;
             case "LIME" -> Color.LIME;
             case "MAROON" -> Color.MAROON;
             case "NAVY" -> Color.NAVY;
@@ -50,12 +50,17 @@ public class ColorDeserializer extends StdDeserializer<Color> {
         // as an RGB int value
         if(node.isIntegralNumber()) {
             int colorNumber = node.asInt();
+            if(colorNumber < 0 || colorNumber > 0xFFFFFF) {
+                Log.error("%s is not a valid color int.", colorNumber);
+                return null;
+            }
+
             return Color.fromRGB(colorNumber);
         }
 
-        // as an hex value #123456
         if(node.isTextual()) {
             String textValue = node.asText();
+            // as an hex value #RRGGBB or #AARRGGBB
             if(textValue.startsWith("#") && (textValue.length() == 7 || textValue.length() == 9)) {
                 int rgbValue = Integer.valueOf(textValue.substring(1), 16);
                 if(textValue.length() == 7) {
@@ -64,6 +69,7 @@ public class ColorDeserializer extends StdDeserializer<Color> {
                     return Color.fromARGB(rgbValue);
                 }
             } else {
+                // with color name
                 return getColorByName(node.asText());
             }
         }

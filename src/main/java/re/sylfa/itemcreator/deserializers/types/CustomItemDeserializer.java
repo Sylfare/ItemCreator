@@ -8,6 +8,8 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.DeathProtection;
 import io.papermc.paper.datacomponent.item.DyedItemColor;
+import io.papermc.paper.datacomponent.item.Enchantable;
+import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import net.minecraft.core.component.DataComponents;
 import org.bukkit.Material;
 import org.bukkit.MusicInstrument;
@@ -51,6 +53,7 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
         itemNms.remove(DataComponents.ATTRIBUTE_MODIFIERS);
         itemNms.remove(DataComponents.FOOD);
         itemNms.remove(DataComponents.REPAIRABLE);
+        itemNms.remove(DataComponents.ENCHANTABLE);
         ItemStack item = itemNms.asBukkitCopy();
 
 
@@ -89,6 +92,10 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
             .ifPresent(color -> item.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor(color)));
         Parsers.getNodeValue(node, "instrument", Objects::nonNull, MusicInstrument.class)
             .ifPresent(instrument -> item.setData(DataComponentTypes.INSTRUMENT, instrument));
+        Parsers.getNodeValue(node, "enchantable", JsonNode::isObject, Enchantable.class)
+            .ifPresent(enchantable -> item.setData(DataComponentTypes.ENCHANTABLE, enchantable));
+        Parsers.getNodeValue(node, "profile", JsonNode::isObject, ResolvableProfile.class)
+            .ifPresent(profile -> item.setData(DataComponentTypes.PROFILE, profile));
 
 
         CustomItem.Builder builder = CustomItem.builder()
