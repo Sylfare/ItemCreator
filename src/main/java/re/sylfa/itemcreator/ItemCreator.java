@@ -114,9 +114,8 @@ public class ItemCreator extends JavaPlugin {
         recipeRegistry.removeAll();
 
         readRecipes.forEach(recipeRegistry::add);
-        // resendRecipes = false does not work for now
+        // FIXME resendRecipes = false does not work for now
         readRecipesMap.values().forEach(r -> Bukkit.addRecipe(r, false));
-        Bukkit.addRecipe(null, true);
     }
 
     public void reload() {
