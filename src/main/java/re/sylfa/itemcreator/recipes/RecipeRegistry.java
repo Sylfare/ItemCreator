@@ -1,11 +1,11 @@
 package re.sylfa.itemcreator.recipes;
 
+import org.bukkit.Keyed;
+import org.bukkit.NamespacedKey;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.bukkit.Keyed;
-import org.bukkit.NamespacedKey;
 
 public class RecipeRegistry {
 

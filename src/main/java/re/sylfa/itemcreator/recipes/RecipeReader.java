@@ -35,9 +35,8 @@ public class RecipeReader {
                 String folderName = folder.getName();
                 return JavaUtils.arrayStream(folder.listFiles())
                     .filter(file -> {
-//                        if(!List.of("yml","yaml").contains(FilenameUtils.getExtension(file.getPath()))) {
                         if(!"json".equals(FilenameUtils.getExtension(file.getPath()))) {
-                            Log.warn("%s is not an item file in %s", file.getName(), folderName);
+                            Log.warn("%s is not a recipe file in %s", file.getName(), folderName);
                             return false;
                         } else {
                             return true;
@@ -56,7 +55,8 @@ public class RecipeReader {
     }
 
     public static CustomRecipe readRecipe(YamlConfiguration config, String fileName) {
-        Log.log("Reading recipe %s", fileName);
+        // TODO toggleable in configuration
+//        Log.log("Reading recipe %s", fileName);
         Map<Character, String> shapedIngredients;
         if(config.isSet("shapedIngredients")) {
             shapedIngredients = config.getConfigurationSection("shapedIngredients").getValues(false)

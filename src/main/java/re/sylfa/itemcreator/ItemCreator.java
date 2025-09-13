@@ -104,11 +104,19 @@ public class ItemCreator extends JavaPlugin {
                 CustomRecipe::key,
                 CustomRecipe::asRecipe
             ));
-        recipeRegistry.getAll().keySet().forEach(key -> Log.log("Removing %s: %b", key.asString(), Bukkit.removeRecipe(key)));
+        recipeRegistry.getAll().keySet()
+            .forEach(key -> {
+                boolean recipeRemoved = Bukkit.removeRecipe(key);
+                // TODO toggleable in configuration
+//                Log.log("Removing %s: %b", key.asString(), recipeRemoved);
+                }
+            );
         recipeRegistry.removeAll();
 
         readRecipes.forEach(recipeRegistry::add);
-        readRecipesMap.values().forEach(r -> Bukkit.addRecipe(r, true));
+        // resendRecipes = false does not work for now
+        readRecipesMap.values().forEach(r -> Bukkit.addRecipe(r, false));
+        Bukkit.addRecipe(null, true);
     }
 
     public void reload() {
