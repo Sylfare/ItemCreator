@@ -99,8 +99,14 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
             .ifPresent(profile -> item.setData(DataComponentTypes.PROFILE, profile));
         Parsers.getNodeValue(node, "rarity", JsonNode::isTextual, ItemRarity.class)
             .ifPresent(rarity -> item.editMeta(itemMeta -> itemMeta.setRarity(rarity)));
+        Parsers.getIntNodeValue(node, "repairCost")
+                .ifPresent(cost -> item.setData(DataComponentTypes.REPAIR_COST, cost));
         Parsers.getNodeValue(node, "tool", JsonNode::isObject, ToolComponent.class)
             .ifPresent(tool -> item.editMeta(itemMeta -> itemMeta.setTool(tool)));
+        Parsers.getKeyNodeValue(node, "tooltipStyle")
+            .ifPresent(style -> item.setData(DataComponentTypes.TOOLTIP_STYLE, style));
+        Parsers.getBooleanNodeValue(node, "unbreakable")
+            .ifPresent(unbreakable -> item.getItemMeta().setUnbreakable(unbreakable));
 
 
         CustomItem.Builder builder = CustomItem.builder()
