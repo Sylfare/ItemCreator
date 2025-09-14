@@ -9,6 +9,7 @@ import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.DeathProtection;
 import io.papermc.paper.datacomponent.item.DyedItemColor;
 import io.papermc.paper.datacomponent.item.Enchantable;
+import io.papermc.paper.datacomponent.item.ItemAttributeModifiers;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import net.minecraft.core.component.DataComponents;
 import org.bukkit.Material;
@@ -57,6 +58,8 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
         ItemStack item = itemNms.asBukkitCopy();
 
         Parsers.getIntNodeValue(node, "amount").ifPresent(item::setAmount);
+        Parsers.getNodeValue(node, "attributes", JsonNode::isArray, ItemAttributeModifiers.class)
+            .ifPresent(attributes -> item.setData(DataComponentTypes.ATTRIBUTE_MODIFIERS, attributes));
         Parsers.getKeyNodeValue(node, "breakSound")
             .ifPresent(sound -> item.setData(DataComponentTypes.BREAK_SOUND, sound));
         Parsers.getNodeValue(node, "consumable", JsonNode::isObject, Consumable.class)

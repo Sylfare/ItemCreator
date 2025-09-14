@@ -29,6 +29,10 @@ public interface Parsers {
             : Optional.empty();
     }
 
+    static Optional<Double> getDoubleNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
+        return getNodeValue(node, valueName, JsonNode::isNumber, Double.class);
+    }
+
     static Optional<Float> getFloatNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
         return getNodeValue(node, valueName, JsonNode::isNumber, Float.class);
     }

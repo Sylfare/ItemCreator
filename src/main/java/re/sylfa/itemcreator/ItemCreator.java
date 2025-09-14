@@ -7,7 +7,9 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.DeathProtection;
 import io.papermc.paper.datacomponent.item.Enchantable;
+import io.papermc.paper.datacomponent.item.ItemAttributeModifiers;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
+import io.papermc.paper.datacomponent.item.attribute.AttributeModifierDisplay;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
@@ -34,6 +36,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.permissions.CommandPermissions;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import re.sylfa.itemcreator.commands.ItemCreatorCommand;
+import re.sylfa.itemcreator.deserializers.components.AttributeModifiersDeserializer;
 import re.sylfa.itemcreator.deserializers.components.ConsumableDeserializer;
 import re.sylfa.itemcreator.deserializers.components.ConsumeEffectDeserializer;
 import re.sylfa.itemcreator.deserializers.components.DeathProtectionDeserializer;
@@ -160,6 +163,9 @@ public class ItemCreator extends JavaPlugin {
             .addDeserializer(Enchantable.class, new EnchantableDeserializer())
             .addDeserializer(ResolvableProfile.class, new ProfileDeserializer())
             .addDeserializer(ProfileProperty.class, new ProfileDeserializer.ProfilePropertyDeserializer())
+            .addDeserializer(ItemAttributeModifiers.class, new AttributeModifiersDeserializer())
+            .addDeserializer(AttributeModifiersDeserializer.AttributeModification.class, new AttributeModifiersDeserializer.AttributeModifierDeserializer())
+            .addDeserializer(AttributeModifierDisplay.class, new AttributeModifiersDeserializer.AttributeModifierDisplayDeserializer())
         ;
 
         mapper.registerModule(module);
