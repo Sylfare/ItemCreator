@@ -54,14 +54,13 @@ public class AttributeModifiersDeserializer extends StdDeserializer<ItemAttribut
             AttributeModifier modifier = new AttributeModifier(
                 key,
                 amount,
-                operation,
-                equipmentSlotGroup
+                operation
             );
 
             if(display != null) {
-                builder.addModifier(attribute, modifier, display);
+                builder.addModifier(attribute, modifier, equipmentSlotGroup, display);
             } else {
-                builder.addModifier(attribute, modifier);
+                builder.addModifier(attribute, modifier, equipmentSlotGroup);
             }
         }
     }
@@ -87,15 +86,20 @@ public class AttributeModifiersDeserializer extends StdDeserializer<ItemAttribut
             }
 
             Optional<AttributeModifierDisplay> display = Parsers.getNodeValue(node, "display", JsonNode::isTextual, AttributeModifierDisplay.class);
-            EquipmentSlotGroup slotGroup = Parsers.getNodeValue(node, "slotGroup", JsonNode::isTextual, EquipmentSlotGroup.class)
+            EquipmentSlotGroup slot = Optional.ofNullable(node.get("slot"))
+                .map(JsonNode::asText)
+                .filter(Objects::nonNull)
+                .map(EquipmentSlotGroup::getByName)
+                .filter(Objects::nonNull)
                 .orElse(EquipmentSlotGroup.ANY);
+
             return new AttributeModification(
                 attribute.get(),
                 key.get(),
                 amount.get(),
                 operation.get(),
                 display.orElse(null),
-                slotGroup
+                slot
             );
         }
     }
