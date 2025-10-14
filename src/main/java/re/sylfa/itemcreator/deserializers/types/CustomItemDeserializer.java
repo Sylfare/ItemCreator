@@ -6,12 +6,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
+import io.papermc.paper.datacomponent.item.CustomModelData;
 import io.papermc.paper.datacomponent.item.DeathProtection;
 import io.papermc.paper.datacomponent.item.DyedItemColor;
 import io.papermc.paper.datacomponent.item.Enchantable;
 import io.papermc.paper.datacomponent.item.ItemAttributeModifiers;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import net.minecraft.core.component.DataComponents;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.MusicInstrument;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -60,10 +62,14 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
         Parsers.getIntNodeValue(node, "amount").ifPresent(item::setAmount);
         Parsers.getNodeValue(node, "attributes", JsonNode::isArray, ItemAttributeModifiers.class)
             .ifPresent(attributes -> item.setData(DataComponentTypes.ATTRIBUTE_MODIFIERS, attributes));
+        Parsers.getNodeValue(node, "baseColor", JsonNode::isTextual, DyeColor.class)
+            .ifPresent(color -> item.setData(DataComponentTypes.BASE_COLOR, color));
         Parsers.getKeyNodeValue(node, "breakSound")
             .ifPresent(sound -> item.setData(DataComponentTypes.BREAK_SOUND, sound));
         Parsers.getNodeValue(node, "consumable", JsonNode::isObject, Consumable.class)
             .ifPresent(consumable -> item.setData(DataComponentTypes.CONSUMABLE, consumable));
+        Parsers.getNodeValue(node, "customModelData", JsonNode::isObject, CustomModelData.class)
+            .ifPresent(modelData -> item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, modelData));
         Parsers.getComponentNodeValue(node, "customName")
             .ifPresent(customName -> item.getItemMeta().displayName(customName));
         Parsers.getIntNodeValue(node, "damage")

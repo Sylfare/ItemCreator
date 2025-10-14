@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.datacomponent.item.Consumable;
+import io.papermc.paper.datacomponent.item.CustomModelData;
 import io.papermc.paper.datacomponent.item.DeathProtection;
 import io.papermc.paper.datacomponent.item.Enchantable;
 import io.papermc.paper.datacomponent.item.ItemAttributeModifiers;
@@ -39,6 +40,7 @@ import re.sylfa.itemcreator.commands.ItemCreatorCommand;
 import re.sylfa.itemcreator.deserializers.components.AttributeModifiersDeserializer;
 import re.sylfa.itemcreator.deserializers.components.ConsumableDeserializer;
 import re.sylfa.itemcreator.deserializers.components.ConsumeEffectDeserializer;
+import re.sylfa.itemcreator.deserializers.components.CustomModelDataDeserializer;
 import re.sylfa.itemcreator.deserializers.components.DeathProtectionDeserializer;
 import re.sylfa.itemcreator.deserializers.components.EnchantableDeserializer;
 import re.sylfa.itemcreator.deserializers.components.EquippableDeserializer;
@@ -166,6 +168,7 @@ public class ItemCreator extends JavaPlugin {
             .addDeserializer(ItemAttributeModifiers.class, new AttributeModifiersDeserializer())
             .addDeserializer(AttributeModifiersDeserializer.AttributeModification.class, new AttributeModifiersDeserializer.AttributeModifierDeserializer())
             .addDeserializer(AttributeModifierDisplay.class, new AttributeModifiersDeserializer.AttributeModifierDisplayDeserializer())
+            .addDeserializer(CustomModelData.class, new CustomModelDataDeserializer())
         ;
 
         mapper.registerModule(module);
