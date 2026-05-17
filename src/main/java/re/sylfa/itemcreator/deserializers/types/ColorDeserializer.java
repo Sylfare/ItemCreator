@@ -1,7 +1,6 @@
 package re.sylfa.itemcreator.deserializers.types;
 
 import org.bukkit.Color;
-import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.util.Log;
 import re.sylfa.itemcreator.util.Parsers;
 import tools.jackson.core.JsonParser;
@@ -11,7 +10,6 @@ import tools.jackson.databind.deser.std.StdDeserializer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class ColorDeserializer extends StdDeserializer<Color> {
@@ -96,7 +94,6 @@ public class ColorDeserializer extends StdDeserializer<Color> {
 
         // as an object {"red": 255, "blue": 120, "green": 41, "alpha": 255}
         if(node.isObject()) {
-            Map<String, Object> map = ItemCreator.getMapper().convertValue(node, Map.class);
             Optional<Integer> red = Parsers.getIntNodeValue(node, "red");
             Optional<Integer> green = Parsers.getIntNodeValue(node, "green");
             Optional<Integer> blue = Parsers.getIntNodeValue(node, "blue");

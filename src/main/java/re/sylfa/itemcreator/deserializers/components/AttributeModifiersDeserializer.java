@@ -87,7 +87,6 @@ public class AttributeModifiersDeserializer extends StdDeserializer<ItemAttribut
             EquipmentSlotGroup slot = Optional.ofNullable(node.get("slot"))
                 .map(JsonNode::asString)
                 .map(EquipmentSlotGroup::getByName)
-                .filter(Objects::nonNull)
                 .orElse(EquipmentSlotGroup.ANY);
 
             return new AttributeModification(
