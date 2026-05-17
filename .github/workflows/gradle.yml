@@ -42,3 +42,4 @@ jobs:
         # Artifact name
         name: ItemCreator.jar
         path: build/libs/ItemCreator.jar
+        archive: false
