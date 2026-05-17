@@ -1,23 +1,21 @@
 package re.sylfa.itemcreator.commands;
 
-import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
-import static io.papermc.paper.command.brigadier.Commands.argument;
-import static io.papermc.paper.command.brigadier.Commands.literal;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.entity.Player;
+import re.sylfa.itemcreator.ItemCreator;
+import re.sylfa.itemcreator.commands.argumentType.CustomItemArgumentType;
+import re.sylfa.itemcreator.items.CustomItem;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.bukkit.entity.Player;
-
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.tree.LiteralCommandNode;
-
-import io.papermc.paper.command.brigadier.CommandSourceStack;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import re.sylfa.itemcreator.ItemCreator;
-import re.sylfa.itemcreator.commands.argumentType.CustomItemArgumentType;
-import re.sylfa.itemcreator.items.CustomItem;
+import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
+import static io.papermc.paper.command.brigadier.Commands.argument;
+import static io.papermc.paper.command.brigadier.Commands.literal;
 
 public class ItemCreatorCommand implements Command{
 

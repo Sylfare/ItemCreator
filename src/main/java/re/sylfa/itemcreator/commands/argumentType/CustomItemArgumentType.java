@@ -30,8 +30,8 @@ public class CustomItemArgumentType implements CustomArgumentType.Converted<Opti
     }
 
     @Override
-    public @NotNull Optional<CustomItem> convert(@NotNull Key key) throws CommandSyntaxException {
-        return Optional.ofNullable(ItemCreator.getItemRegistry().get(key));
+    public Optional<CustomItem> convert(@NotNull Key key) throws CommandSyntaxException {
+        return ItemCreator.getItemRegistry().get(key);
     }
 
     @Override
