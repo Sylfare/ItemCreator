@@ -1,15 +1,13 @@
 package re.sylfa.itemcreator.deserializers.components;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import io.papermc.paper.datacomponent.item.CustomModelData;
 import org.bukkit.Color;
 import re.sylfa.itemcreator.util.Parsers;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 public class CustomModelDataDeserializer extends StdDeserializer<CustomModelData> {
@@ -18,7 +16,7 @@ public class CustomModelDataDeserializer extends StdDeserializer<CustomModelData
     }
 
     @Override
-    public CustomModelData deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+    public CustomModelData deserialize(JsonParser p, DeserializationContext ctxt) {
         JsonNode node = p.readValueAsTree();
         CustomModelData.Builder builder = CustomModelData.customModelData();
 

@@ -1,17 +1,14 @@
 package re.sylfa.itemcreator.deserializers.components;
 
 import com.destroystokyo.paper.profile.ProfileProperty;
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import re.sylfa.itemcreator.ItemCreator;
-import re.sylfa.itemcreator.util.JavaUtils;
 import re.sylfa.itemcreator.util.Parsers;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -20,7 +17,7 @@ public class ProfileDeserializer extends StdDeserializer<ResolvableProfile> {
         super(ResolvableProfile.class);
     }
     @Override
-    public ResolvableProfile deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+    public ResolvableProfile deserialize(JsonParser p, DeserializationContext ctxt) {
         JsonNode node = p.readValueAsTree();
         if(node == null) {
             return null;
@@ -36,7 +33,7 @@ public class ProfileDeserializer extends StdDeserializer<ResolvableProfile> {
                 .ifPresent(builder::addProperty);
         } else if (node.has("properties")) {
             JsonNode properties = node.get("properties");
-            JavaUtils.iteratorStream(properties.elements())
+            properties.valueStream()
                 .map(currentProperty -> ItemCreator.getMapper().convertValue(currentProperty, ProfileProperty.class))
                 .filter(Objects::nonNull)
                 .forEach(builder::addProperty);
@@ -51,7 +48,7 @@ public class ProfileDeserializer extends StdDeserializer<ResolvableProfile> {
         }
 
         @Override
-        public ProfileProperty deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        public ProfileProperty deserialize(JsonParser p, DeserializationContext ctxt) {
             JsonNode node = p.readValueAsTree();
             if(node == null) {
                 return null;

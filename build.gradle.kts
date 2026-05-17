@@ -2,6 +2,7 @@ plugins {
 	`java-library`
     alias { libs.plugins.paperweight }
     alias { libs.plugins.runPaper }
+    alias { libs.plugins.shadow }
 }
 
 repositories {
@@ -25,4 +26,12 @@ dependencies {
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+}
+
+tasks.shadowJar {
+    dependencies {
+        include(dependency("tools.jackson.core:jackson-databind"))
+        include(dependency("tools.jackson.core:jackson-core"))
+        include(dependency("com.fasterxml.jackson.core:jackson-annotations"))
+    }
 }

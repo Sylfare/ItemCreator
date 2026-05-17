@@ -1,9 +1,5 @@
 package re.sylfa.itemcreator.deserializers.components;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import io.papermc.paper.datacomponent.item.ItemAttributeModifiers;
 import io.papermc.paper.datacomponent.item.attribute.AttributeModifierDisplay;
 import net.kyori.adventure.text.Component;
@@ -13,10 +9,12 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import re.sylfa.itemcreator.ItemCreator;
-import re.sylfa.itemcreator.util.JavaUtils;
 import re.sylfa.itemcreator.util.Parsers;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,14 +25,14 @@ public class AttributeModifiersDeserializer extends StdDeserializer<ItemAttribut
     }
 
     @Override
-    public ItemAttributeModifiers deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public ItemAttributeModifiers deserialize(JsonParser p, DeserializationContext ctxt) {
         JsonNode node = p.readValueAsTree();
         if(!node.isArray()) {
             return null;
         }
 
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.itemAttributes();
-        JavaUtils.iteratorStream(node.elements())
+        node.valueStream()
             .map(parsedAttribute -> ItemCreator.getMapper().convertValue(parsedAttribute, AttributeModification.class))
             .filter(Objects::nonNull)
             .forEach(parsedAttribute -> parsedAttribute.addToBuilder(builder));
@@ -71,24 +69,23 @@ public class AttributeModifiersDeserializer extends StdDeserializer<ItemAttribut
         }
 
         @Override
-        public AttributeModification deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        public AttributeModification deserialize(JsonParser p, DeserializationContext ctxt) {
             JsonNode node = p.readValueAsTree();
             if(node == null || !node.isObject()) {
                 return null;
             }
-            Optional<Attribute> attribute = Parsers.getNodeValue(node, "attribute", JsonNode::isTextual, Attribute.class);
+            Optional<Attribute> attribute = Parsers.getNodeValue(node, "attribute", JsonNode::isString, Attribute.class);
             Optional<NamespacedKey> key = Parsers.getNamespacedKeyNodeValue(node, "key");
             Optional<Double> amount = Parsers.getDoubleNodeValue(node, "amount");
-            Optional<AttributeModifier.Operation> operation = Parsers.getNodeValue(node, "operation", JsonNode::isTextual, AttributeModifier.Operation.class);
+            Optional<AttributeModifier.Operation> operation = Parsers.getNodeValue(node, "operation", JsonNode::isString, AttributeModifier.Operation.class);
 
             if(attribute.isEmpty() || key.isEmpty() || amount.isEmpty() || operation.isEmpty()) {
                 return null;
             }
 
-            Optional<AttributeModifierDisplay> display = Parsers.getNodeValue(node, "display", JsonNode::isTextual, AttributeModifierDisplay.class);
+            Optional<AttributeModifierDisplay> display = Parsers.getNodeValue(node, "display", JsonNode::isString, AttributeModifierDisplay.class);
             EquipmentSlotGroup slot = Optional.ofNullable(node.get("slot"))
-                .map(JsonNode::asText)
-                .filter(Objects::nonNull)
+                .map(JsonNode::asString)
                 .map(EquipmentSlotGroup::getByName)
                 .filter(Objects::nonNull)
                 .orElse(EquipmentSlotGroup.ANY);
@@ -110,8 +107,8 @@ public class AttributeModifiersDeserializer extends StdDeserializer<ItemAttribut
         }
 
         @Override
-        public AttributeModifierDisplay deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-            String value = p.getText();
+        public AttributeModifierDisplay deserialize(JsonParser p, DeserializationContext ctxt) {
+            String value = p.getString();
             return switch (value) {
                 case "reset" -> AttributeModifierDisplay.reset();
                 case "hidden" -> AttributeModifierDisplay.hidden();

@@ -1,12 +1,10 @@
 package re.sylfa.itemcreator.deserializers.types;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
 public class NamespacedKeyDeserializer extends StdDeserializer<NamespacedKey> {
     public NamespacedKeyDeserializer() {
@@ -14,7 +12,7 @@ public class NamespacedKeyDeserializer extends StdDeserializer<NamespacedKey> {
     }
 
     @Override
-    public @Nullable NamespacedKey deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public @Nullable NamespacedKey deserialize(JsonParser p, DeserializationContext ctxt) {
         return NamespacedKey.fromString(p.getValueAsString());
     }
 }

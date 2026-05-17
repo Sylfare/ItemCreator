@@ -1,23 +1,22 @@
 package re.sylfa.itemcreator.deserializers.types;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import net.kyori.adventure.key.Key;
 import re.sylfa.itemcreator.items.ItemKey;
 import re.sylfa.itemcreator.util.Parsers;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
 import java.util.Optional;
 
 public class ItemKeyDeserializer extends StdDeserializer<ItemKey> {
     public ItemKeyDeserializer() { super(ItemKey.class);}
 
     @Override
-    public ItemKey deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public ItemKey deserialize(JsonParser p, DeserializationContext ctxt) {
         JsonNode node = p.readValueAsTree();
-        if(node == null || (!node.isTextual() && !node.isObject())) {
+        if(node == null || (!node.isString() && !node.isObject())) {
             return null;
         }
 
@@ -26,8 +25,8 @@ public class ItemKeyDeserializer extends StdDeserializer<ItemKey> {
         if(node.isObject()) {
             key = Parsers.getKeyNodeValue(node, "id");
             amount = Parsers.getIntNodeValue(node, "amount");
-        } else if (node.isTextual() && !node.asText().isBlank()){
-            key = Optional.of(Key.key(node.asText()));
+        } else if (node.isString() && !node.asString().isBlank()){
+            key = Optional.of(Key.key(node.asString()));
             amount = Optional.of(1);
         } else {
             return null;

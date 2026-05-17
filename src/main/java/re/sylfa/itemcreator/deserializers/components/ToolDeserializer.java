@@ -1,15 +1,13 @@
 package re.sylfa.itemcreator.deserializers.components;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import re.sylfa.itemcreator.util.Parsers;
-
-import java.io.IOException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
 public class ToolDeserializer extends StdDeserializer<ToolComponent> {
 
@@ -18,7 +16,7 @@ public class ToolDeserializer extends StdDeserializer<ToolComponent> {
     }
 
     @Override
-    public ToolComponent deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public ToolComponent deserialize(JsonParser p, DeserializationContext ctxt) {
         JsonNode node = p.readValueAsTree();
         if(node == null) {
             return null;

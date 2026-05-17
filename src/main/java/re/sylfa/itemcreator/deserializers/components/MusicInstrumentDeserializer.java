@@ -1,9 +1,5 @@
 package re.sylfa.itemcreator.deserializers.components;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
@@ -12,8 +8,11 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.MusicInstrument;
 import org.bukkit.Sound;
 import re.sylfa.itemcreator.util.Parsers;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
 import java.util.Optional;
 
 public class MusicInstrumentDeserializer extends StdDeserializer<MusicInstrument> {
@@ -21,15 +20,15 @@ public class MusicInstrumentDeserializer extends StdDeserializer<MusicInstrument
     public MusicInstrumentDeserializer() { super(MusicInstrument.class); }
 
     @Override
-    public MusicInstrument deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public MusicInstrument deserialize(JsonParser p, DeserializationContext ctxt) {
         JsonNode node = p.readValueAsTree();
-        if (node == null || (!node.isObject() && !node.isTextual())) {
+        if (node == null || (!node.isObject() && !node.isString())) {
             return null;
         }
 
         // by key
-        if(node.isTextual()) {
-            Key key = Key.key(node.asText());
+        if(node.isString()) {
+            Key key = Key.key(node.asString());
             return RegistryAccess.registryAccess().getRegistry(RegistryKey.INSTRUMENT).get(key);
         }
 

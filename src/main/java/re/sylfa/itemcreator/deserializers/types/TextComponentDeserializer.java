@@ -1,12 +1,11 @@
 package re.sylfa.itemcreator.deserializers.types;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
 import java.util.Optional;
 
 public class TextComponentDeserializer extends StdDeserializer<Component> {
@@ -17,7 +16,7 @@ public class TextComponentDeserializer extends StdDeserializer<Component> {
     }
 
     @Override
-    public Component deserialize(JsonParser p, DeserializationContext ctxt) throws IOException{
+    public Component deserialize(JsonParser p, DeserializationContext ctxt){
 
         return Optional.ofNullable(p.getValueAsString())
             .map(message -> miniMessage.deserialize("<!italic><white>"+message+"</white></!italic>"))

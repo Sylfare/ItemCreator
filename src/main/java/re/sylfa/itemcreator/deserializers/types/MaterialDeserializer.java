@@ -1,11 +1,10 @@
 package re.sylfa.itemcreator.deserializers.types;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.bukkit.Material;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
 import java.util.Optional;
 
 public class MaterialDeserializer extends StdDeserializer<Material> {
@@ -14,7 +13,7 @@ public class MaterialDeserializer extends StdDeserializer<Material> {
     }
 
     @Override
-    public Material deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public Material deserialize(JsonParser p, DeserializationContext ctxt) {
         return Optional.ofNullable(p.getValueAsString())
             .map(Material::matchMaterial)
             .orElse(Material.STONE);

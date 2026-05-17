@@ -1,6 +1,5 @@
 package re.sylfa.itemcreator.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
@@ -12,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.deserializers.components.ToolRuleDeserializer;
 import re.sylfa.itemcreator.items.ItemKey;
+import tools.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public interface Parsers {
     }
 
     static Optional<String> getStringNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
-        return getNodeValue(node, valueName, JsonNode::isTextual, String.class);
+        return getNodeValue(node, valueName, JsonNode::isString, String.class);
     }
 
     static Optional<Boolean> getBooleanNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
@@ -46,7 +46,7 @@ public interface Parsers {
     }
 
     static Optional<Material> getMaterialNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
-        return getNodeValue(node, valueName, JsonNode::isTextual, Material.class);
+        return getNodeValue(node, valueName, JsonNode::isString, Material.class);
     }
 
     static Optional<Component[]> getComponentArrayNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
@@ -88,23 +88,23 @@ public interface Parsers {
     }
 
     static Optional<Component> getComponentNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
-        return getNodeValue(node, valueName, JsonNode::isTextual, Component.class);
+        return getNodeValue(node, valueName, JsonNode::isString, Component.class);
     }
 
     static Optional<NamespacedKey> getNamespacedKeyNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
-        return getNodeValue(node, valueName, JsonNode::isTextual, NamespacedKey.class);
+        return getNodeValue(node, valueName, JsonNode::isString, NamespacedKey.class);
     }
 
     static Optional<Key> getKeyNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
-        return getNodeValue(node, valueName, JsonNode::isTextual, Key.class);
+        return getNodeValue(node, valueName, JsonNode::isString, Key.class);
     }
 
     static Optional<ItemStack> getItemStackNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
-        return getNodeValue(node, valueName, jsonNode -> jsonNode.isTextual() || jsonNode.isObject(), ItemStack.class);
+        return getNodeValue(node, valueName, jsonNode -> jsonNode.isString() || jsonNode.isObject(), ItemStack.class);
     }
 
     static Optional<ItemKey> getItemKeyNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
-        return getNodeValue(node, valueName, jsonNode -> jsonNode.isTextual() || jsonNode.isObject(), ItemKey.class);
+        return getNodeValue(node, valueName, jsonNode -> jsonNode.isString() || jsonNode.isObject(), ItemKey.class);
     }
 
     static Optional<PotionEffect> getPotionEffectNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
@@ -116,6 +116,6 @@ public interface Parsers {
     }
 
     static Optional<UUID> getUUIDNodeValue(@NonNull JsonNode node, @NonNull String valueName) {
-        return getNodeValue(node, valueName, n -> n.isTextual() && !n.isEmpty(), UUID.class);
+        return getNodeValue(node, valueName, n -> n.isString() && !n.isEmpty(), UUID.class);
     }
 }

@@ -1,27 +1,26 @@
 package re.sylfa.itemcreator.deserializers.components;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import re.sylfa.itemcreator.util.Log;
 import re.sylfa.itemcreator.util.Parsers;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
 import java.util.Optional;
 
 public class PotionEffectDeserializer extends StdDeserializer<PotionEffect> {
     public PotionEffectDeserializer() { super(PotionEffect.class); }
 
     @Override
-    public PotionEffect deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public PotionEffect deserialize(JsonParser p, DeserializationContext ctxt) {
         JsonNode node = p.readValueAsTree();
         if(node == null || !node.isObject()) {
             return null;
         }
-        Optional<PotionEffectType> type = Parsers.getNodeValue(node, "type", JsonNode::isTextual, PotionEffectType.class);
+        Optional<PotionEffectType> type = Parsers.getNodeValue(node, "type", JsonNode::isString, PotionEffectType.class);
         Optional<Integer> duration = Parsers.getIntNodeValue(node, "duration");
         Optional<Integer> amplifier = Parsers.getIntNodeValue(node, "amplifier");
         boolean ambient = Parsers.getBooleanNodeValue(node, "ambient").orElse(true);

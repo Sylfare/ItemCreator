@@ -1,15 +1,12 @@
 package re.sylfa.itemcreator.deserializers.components;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import io.papermc.paper.datacomponent.item.Enchantable;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import re.sylfa.itemcreator.util.Log;
-
-import java.io.IOException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
 public class EnchantableDeserializer extends StdDeserializer<Enchantable> {
     private static final int NOT_FOUND = -1;
@@ -18,7 +15,7 @@ public class EnchantableDeserializer extends StdDeserializer<Enchantable> {
     }
 
     @Override @Nullable
-    public Enchantable deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+    public Enchantable deserialize(JsonParser p, DeserializationContext ctxt) {
         JsonNode node = p.readValueAsTree();
         if(node == null) {
             return null;

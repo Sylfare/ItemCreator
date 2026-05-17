@@ -1,8 +1,6 @@
 package re.sylfa.itemcreator;
 
 import com.destroystokyo.paper.profile.ProfileProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.CustomModelData;
@@ -68,6 +66,9 @@ import re.sylfa.itemcreator.recipes.CustomRecipe;
 import re.sylfa.itemcreator.recipes.RecipeReader;
 import re.sylfa.itemcreator.recipes.RecipeRegistry;
 import re.sylfa.itemcreator.util.Log;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
 
 import java.util.List;
 import java.util.Map;
@@ -83,7 +84,7 @@ public class ItemCreator extends JavaPlugin {
     private static final RecipeRegistry recipeRegistry = new RecipeRegistry();
 
     @Getter
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static ObjectMapper mapper;
 
 
     @Override
@@ -142,6 +143,7 @@ public class ItemCreator extends JavaPlugin {
     }
 
     private void registerMappers() {
+
         SimpleModule module = new SimpleModule();
         module.addDeserializer(CustomItem.class, new CustomItemDeserializer())
             .addDeserializer(ItemStack.class, new ItemDeserializer())
@@ -171,7 +173,9 @@ public class ItemCreator extends JavaPlugin {
             .addDeserializer(CustomModelData.class, new CustomModelDataDeserializer())
         ;
 
-        mapper.registerModule(module);
+        mapper = JsonMapper.builder()
+            .addModule(module)
+            .build();
 
     }
 }

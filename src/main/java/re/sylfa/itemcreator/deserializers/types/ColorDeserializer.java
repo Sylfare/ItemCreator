@@ -1,15 +1,14 @@
 package re.sylfa.itemcreator.deserializers.types;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.bukkit.Color;
 import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.util.Log;
 import re.sylfa.itemcreator.util.Parsers;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ public class ColorDeserializer extends StdDeserializer<Color> {
     public ColorDeserializer() { super(Color.class); }
 
     @Override
-    public Color deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public Color deserialize(JsonParser p, DeserializationContext ctxt) {
         JsonNode node = p.readValueAsTree();
         if(node == null) {
             return null;
@@ -58,8 +57,8 @@ public class ColorDeserializer extends StdDeserializer<Color> {
             return Color.fromRGB(colorNumber);
         }
 
-        if(node.isTextual()) {
-            String textValue = node.asText();
+        if(node.isString()) {
+            String textValue = node.asString();
             // as an hex value #RRGGBB or #AARRGGBB
             if(textValue.startsWith("#") && (textValue.length() == 7 || textValue.length() == 9)) {
                 int rgbValue = Integer.valueOf(textValue.substring(1), 16);
@@ -70,7 +69,7 @@ public class ColorDeserializer extends StdDeserializer<Color> {
                 }
             } else {
                 // with color name
-                return getColorByName(node.asText());
+                return getColorByName(node.asString());
             }
         }
 

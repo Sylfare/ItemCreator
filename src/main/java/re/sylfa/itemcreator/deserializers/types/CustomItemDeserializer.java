@@ -1,9 +1,5 @@
 package re.sylfa.itemcreator.deserializers.types;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.CustomModelData;
@@ -27,8 +23,11 @@ import org.bukkit.inventory.meta.components.JukeboxPlayableComponent;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import re.sylfa.itemcreator.items.CustomItem;
 import re.sylfa.itemcreator.util.Parsers;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +38,7 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
     }
 
     @Override
-    public CustomItem deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+    public CustomItem deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
         JsonNode node = jsonParser.readValueAsTree();
         if(node == null) {
             return null;
@@ -62,7 +61,7 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
         Parsers.getIntNodeValue(node, "amount").ifPresent(item::setAmount);
         Parsers.getNodeValue(node, "attributes", JsonNode::isArray, ItemAttributeModifiers.class)
             .ifPresent(attributes -> item.setData(DataComponentTypes.ATTRIBUTE_MODIFIERS, attributes));
-        Parsers.getNodeValue(node, "baseColor", JsonNode::isTextual, DyeColor.class)
+        Parsers.getNodeValue(node, "baseColor", JsonNode::isString, DyeColor.class)
             .ifPresent(color -> item.setData(DataComponentTypes.BASE_COLOR, color));
         Parsers.getKeyNodeValue(node, "breakSound")
             .ifPresent(sound -> item.setData(DataComponentTypes.BREAK_SOUND, sound));
@@ -94,7 +93,7 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
             .ifPresent(modelKey -> item.editMeta(itemMeta -> itemMeta.setItemModel(modelKey)));
         Parsers.getComponentNodeValue(node, "itemName")
             .ifPresent(itemName -> item.editMeta(ItemMeta.class, meta -> meta.itemName(itemName)));
-        Parsers.getNodeValue(node, "jukeboxPlayable", JsonNode::isTextual, JukeboxPlayableComponent.class)
+        Parsers.getNodeValue(node, "jukeboxPlayable", JsonNode::isString, JukeboxPlayableComponent.class)
             .ifPresent(song -> item.editMeta(itemMeta -> itemMeta.setJukeboxPlayable(song)));
         Parsers.getComponentArrayNodeValue(node, "lore")
             .ifPresent(loreLines -> item.editMeta(itemMeta -> itemMeta.lore(List.of(loreLines))));
@@ -106,7 +105,7 @@ public class CustomItemDeserializer extends StdDeserializer<CustomItem> {
             .ifPresent(soundKey -> item.setData(DataComponentTypes.NOTE_BLOCK_SOUND, soundKey));
         Parsers.getNodeValue(node, "profile", JsonNode::isObject, ResolvableProfile.class)
             .ifPresent(profile -> item.setData(DataComponentTypes.PROFILE, profile));
-        Parsers.getNodeValue(node, "rarity", JsonNode::isTextual, ItemRarity.class)
+        Parsers.getNodeValue(node, "rarity", JsonNode::isString, ItemRarity.class)
             .ifPresent(rarity -> item.editMeta(itemMeta -> itemMeta.setRarity(rarity)));
         Parsers.getIntNodeValue(node, "repairCost")
                 .ifPresent(cost -> item.setData(DataComponentTypes.REPAIR_COST, cost));

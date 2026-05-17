@@ -1,9 +1,5 @@
 package re.sylfa.itemcreator.deserializers.components;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.set.RegistrySet;
@@ -13,8 +9,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import re.sylfa.itemcreator.ItemCreator;
 import re.sylfa.itemcreator.util.Parsers;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,9 +25,9 @@ public class ConsumeEffectDeserializer extends StdDeserializer<ConsumeEffect> {
     public ConsumeEffectDeserializer() { super(ConsumeEffect.class); }
 
     @Override
-    public ConsumeEffect deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public ConsumeEffect deserialize(JsonParser p, DeserializationContext ctxt) {
         JsonNode node = p.readValueAsTree();
-        Optional<Type> type = Parsers.getNodeValue(node, "type", JsonNode::isTextual, Type.class);
+        Optional<Type> type = Parsers.getNodeValue(node, "type", JsonNode::isString, Type.class);
         if(type.isEmpty()) {
             return null;
         }
@@ -63,7 +62,7 @@ public class ConsumeEffectDeserializer extends StdDeserializer<ConsumeEffect> {
 
                 Set<PotionEffectType> effectTypes = new HashSet<>();
                 for(JsonNode effect : effects) {
-                    String rawKey = effect.asText();
+                    String rawKey = effect.asString();
                     if(rawKey == null || rawKey.isBlank()) {
                         continue;
                     }
